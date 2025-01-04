@@ -50,7 +50,7 @@
     "description": "To install dependencies:",
     "repository": {
         "type": "git",
-        "url": "git@github.com:/gander-tools/playground-js-lib.git"
+        "url": "git+https://github.com/gander-tools/playground-js-lib.git"
     },
     "author": "Adam Gąsowski",
     "bugs": {
