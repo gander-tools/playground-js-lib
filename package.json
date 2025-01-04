@@ -1,6 +1,6 @@
 {
     "name": "@gander-tools/playground",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "license": "MIT",
     "type": "commonjs",
     "main": "./dist/index.cjs",
