@@ -1,6 +1,6 @@
 {
-    "name": "@gander/playground",
-    "version": "0.9.3",
+    "name": "@gander-tools/playground",
+    "version": "0.0.0",
     "license": "MIT",
     "type": "commonjs",
     "main": "./dist/index.cjs",
@@ -50,11 +50,11 @@
     "description": "To install dependencies:",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/gander/jsr-playground.git"
+        "url": "git@github.com:/gander-tools/playground-js-lib.git"
     },
-    "author": "gander",
+    "author": "Adam Gąsowski",
     "bugs": {
-        "url": "https://github.com/gander/jsr-playground/issues"
+        "url": "https://github.com/gander-tools/playground-js-lib/issues"
     },
-    "homepage": "https://github.com/gander/jsr-playground#readme"
+    "homepage": "https://github.com/gander-tools/playground-js-lib"
 }
