@@ -5,18 +5,12 @@ export default {
         requireBranch: 'master',
         commit: true,
         commitMessage: 'chore: release v${version}',
-        commitArgs: ['-S'],
         tag: true,
         tagName: 'v${version}',
-        tagArgs: ['-s'],
         push: true,
     },
     github: {
-        release: true,
-        releaseName: 'v${version}',
-        comments: {
-            submit: true,
-        },
+        release: false,
     },
     npm: {
         publish: false,
