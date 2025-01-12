@@ -32,12 +32,12 @@ export default {
                 path: "version",
             },
         },
-        "@release-it/conventional-changelog": {
-            infile: "CHANGELOG.md",
-            header: "# Changelog",
-            preset: {
-                name: "conventionalcommits",
-            },
-        },
+        // "@release-it/conventional-changelog": {
+        //     infile: "CHANGELOG.md",
+        //     header: "# Changelog",
+        //     preset: {
+        //         name: "conventionalcommits",
+        //     },
+        // },
     },
 } satisfies Config;
