@@ -7,6 +7,7 @@ export default {
         tag: true,
         tagArgs: ["-s"],
         push: true,
+        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/main/templates/changelog-compact.hbs",
     },
     github: {
         release: false,
@@ -15,28 +16,22 @@ export default {
         publish: false,
     },
     hooks: {
-        // prettier-ignore
-        'before:init': [
-            'NI_DEFAULT_AGENT="npm" nr test:run',
-            'NI_DEFAULT_AGENT="npm" nr test:types',
-            'NI_DEFAULT_AGENT="npm" nr lint',
-            'NI_DEFAULT_AGENT="npm" nr lint:format',
-            'NI_DEFAULT_AGENT="npm" nr prepack',
-            'NI_DEFAULT_AGENT="npm" nr lint:package',
+        "before:init": [
+            //prettier-ignore
+            "NI_DEFAULT_AGENT='npm' nr test:run",
+            "NI_DEFAULT_AGENT='npm' nr test:types",
+            "NI_DEFAULT_AGENT='npm' nr lint",
+            "NI_DEFAULT_AGENT='npm' nr lint:format",
+            "NI_DEFAULT_AGENT='npm' nr prepack",
+            "NI_DEFAULT_AGENT='npm' nr lint:package",
         ],
+        "after:bump": "NI_DEFAULT_AGENT='npm' nlx auto-changelog -p",
     },
     plugins: {
         "@release-it/bumper": {
             out: {
                 file: "jsr.json",
                 path: "version",
-            },
-        },
-        "@release-it/conventional-changelog": {
-            infile: "CHANGELOG.md",
-            header: "# Changelog",
-            preset: {
-                name: "conventionalcommits",
             },
         },
     },
