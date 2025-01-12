@@ -7,7 +7,7 @@ export default {
         tag: true,
         tagArgs: ["-s"],
         push: true,
-        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/main/templates/keepachangelog.hbs",
+        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/main/templates/changelog-compact.hbs",
     },
     github: {
         release: false,
