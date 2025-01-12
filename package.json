@@ -40,6 +40,7 @@
         "lint:package": "publint --pack auto",
         "prepack": "pkgroll --clean-dist --sourcemap --minify",
         "release": "release-it --only-version",
+        "release:dry": "release-it --dry-run --no-git.requireCleanWorkingDir --no-git.requireBranch",
         "test": "vitest",
         "test:coverage": "vitest --coverage",
         "test:run": "vitest run",
