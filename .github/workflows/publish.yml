@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
     push:
         tags:
-            - 'v[0-9]+.[0-9]+.[0-9]+'
+            - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
     publish-to-npm:
@@ -14,20 +14,20 @@ jobs:
             id-token: write
 
         steps:
-            -   uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-            -   uses: actions/setup-node@v4
-                with:
-                    node-version: '20.x'
-                    registry-url: 'https://registry.npmjs.org'
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "20.x"
+                  registry-url: "https://registry.npmjs.org"
 
-            -   uses: oven-sh/setup-bun@v2
+            - uses: oven-sh/setup-bun@v2
 
-            -   run: bun install
+            - run: bun install
 
-            -   run: npm publish --provenance --access public
-                env:
-                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - run: npm publish --provenance --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     publish-to-jsr:
         needs: publish-to-npm
@@ -39,15 +39,15 @@ jobs:
             id-token: write
 
         steps:
-            -   uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-            -   name: Install deno
-                uses: denoland/setup-deno@v2
-                with:
-                    deno-version: v2.x
+            - name: Install deno
+              uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
 
-            -   name: Install dependencies
-                run: deno install --no-lock --allow-scripts
+            - name: Install dependencies
+              run: deno install --no-lock --allow-scripts
 
-            -   name: Publish package
-                run: deno publish
+            - name: Publish package
+              run: deno publish

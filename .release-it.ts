@@ -1,12 +1,11 @@
-import type {Config} from 'release-it';
+import type { Config } from "release-it";
 
 export default {
     git: {
-        requireBranch: 'master',
         commit: true,
-        commitMessage: 'chore: release v${version}',
+        commitArgs: ["-S"],
         tag: true,
-        tagName: 'v${version}',
+        tagArgs: ["-s"],
         push: true,
     },
     github: {
@@ -16,13 +15,28 @@ export default {
         publish: false,
     },
     hooks: {
-        'before:init': 'bun run prepack',
+        // prettier-ignore
+        'before:init': [
+            'NI_DEFAULT_AGENT="npm" nr test:run',
+            'NI_DEFAULT_AGENT="npm" nr test:types',
+            'NI_DEFAULT_AGENT="npm" nr lint',
+            'NI_DEFAULT_AGENT="npm" nr lint:format',
+            'NI_DEFAULT_AGENT="npm" nr prepack',
+            'NI_DEFAULT_AGENT="npm" nr lint:package',
+        ],
     },
     plugins: {
-        '@release-it/bumper': {
+        "@release-it/bumper": {
             out: {
-                file: 'jsr.json',
-                path: 'version',
+                file: "jsr.json",
+                path: "version",
+            },
+        },
+        "@release-it/conventional-changelog": {
+            infile: "CHANGELOG.md",
+            header: "# Changelog",
+            preset: {
+                name: "conventionalcommits",
             },
         },
     },
