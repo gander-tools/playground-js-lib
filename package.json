@@ -8,9 +8,11 @@
     },
     "author": "Adam Gąsowski",
     "bugs": {
-        "url": "https://github.com/gander-tools/nms-lib/issues"
+        "url": "https://github.com/gander-tools/playground-js-lib/issues"
     },
-    "homepage": "https://github.com/gander-tools/nms-lib",
+    "repository": {
+        "url": "https://github.com/gander-tools/playground-js-lib"
+    },
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.cts",
