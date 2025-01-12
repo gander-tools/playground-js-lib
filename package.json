@@ -39,7 +39,7 @@
         "lint:format": "prettier --check .",
         "lint:package": "publint --pack auto",
         "prepack": "pkgroll --clean-dist --sourcemap --minify",
-        "release": "release-it --only-version",
+        "release": "release-it",
         "test": "vitest",
         "test:coverage": "vitest --coverage",
         "test:run": "vitest run",
