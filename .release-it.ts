@@ -6,6 +6,7 @@ export default {
         commitArgs: ["-S"],
         tag: true,
         tagArgs: ["-s"],
+        tagAnnotation: "Release ${version}: [CHANGELOG](https://github.com/gander-tools/playground-js-lib/blob/master/CHANGELOG.md)",
         push: true,
         changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout",
     },
