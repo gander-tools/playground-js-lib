@@ -1,6 +1,16 @@
 # Changelog
 
-## [unreleased]
+## [0.2.1] - 2025-01-13
+
+### 🚀 Features
+
+- Remote.github
+
+### ⚙️ Miscellaneous Tasks
+
+- Sprawdzam
+
+## [0.2.0] - 2025-01-13
 
 ### 🚀 Features
 
