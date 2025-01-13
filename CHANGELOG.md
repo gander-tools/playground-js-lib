@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2025-01-13
+
+### ⚙️ Miscellaneous Tasks
+
+- Sprawdzam 2
+
 ## [0.2.1] - 2025-01-13
 
 ### 🚀 Features
