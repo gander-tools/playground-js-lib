@@ -7,7 +7,7 @@ export default {
         tag: true,
         tagArgs: ["-s"],
         push: true,
-        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout --commit-limit false -u",
+        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout",
     },
     github: {
         release: false,
@@ -25,7 +25,7 @@ export default {
             "NI_DEFAULT_AGENT='npm' nr prepack",
             "NI_DEFAULT_AGENT='npm' nr lint:package",
         ],
-        "after:bump": "NI_DEFAULT_AGENT='npm' nlx auto-changelog -p",
+        "after:bump": "NI_DEFAULT_AGENT='npm' nlx auto-changelog",
     },
     plugins: {
         "@release-it/bumper": {
