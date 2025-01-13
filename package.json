@@ -45,8 +45,7 @@
         "test:coverage": "vitest --coverage",
         "test:run": "vitest run",
         "test:types": "tsc --noEmit",
-        "test:watch": "vitest watch",
-        "version": "auto-changelog"
+        "test:watch": "vitest watch"
     },
     "devDependencies": {
         "@antfu/ni": "^23.2.0",
