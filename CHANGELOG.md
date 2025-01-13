@@ -1,6 +1,16 @@
 ## Changelog
 
-### [v0.1.0](https://github.com//gander-tools/playground-js-lib.git/compare/v0.0.11...v0.1.0) - 
+### [v0.1.1](https://github.com//gander-tools/playground-js-lib.git/compare/v0.1.0...v0.1.1) - 
+
+#### New Features
+
+- feat: try something... @Adam Gąsowski 
+
+#### Fixes
+
+- fix: prettier ignore CHANGELOG.md @Adam Gąsowski 
+
+### [v0.1.0](https://github.com//gander-tools/playground-js-lib.git/compare/v0.0.11...v0.1.0) -  13 January 2025 
 
 - fix: changelog fix #10
 - feat: release:dry
@@ -8,6 +18,10 @@
 #### Fixes
 
 - fix: changelog test @Adam Gąsowski 
+
+#### General Changes
+
+- Release 0.1.0 @Adam Gąsowski 
 
 ### [v0.0.11](https://github.com//gander-tools/playground-js-lib.git/compare/v0.0.10...v0.0.11) -  13 January 2025 
 
