@@ -2,7 +2,7 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "NI_DEFAULT_AGENT='npm' nlx auto-changelog --stdout",
+        changelog: "NI_DEFAULT_AGENT='npm' nr git-cliff",
         commit: true,
         commitArgs: ["-S"],
         tag: true,
@@ -25,7 +25,7 @@ export default {
             "NI_DEFAULT_AGENT='npm' nr prepack",
             "NI_DEFAULT_AGENT='npm' nr lint:package",
         ],
-        "after:bump": "NI_DEFAULT_AGENT='npm' nlx auto-changelog",
+        "after:bump": "NI_DEFAULT_AGENT='npm' nr git-cliff --output CHANGELOG.md",
     },
     plugins: {
         "@release-it/bumper": {
