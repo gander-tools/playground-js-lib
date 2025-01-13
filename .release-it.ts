@@ -2,7 +2,7 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "NI_DEFAULT_AGENT='npm' nr git-cliff",
+        changelog: "NI_DEFAULT_AGENT='npm' nr git-cliff --unreleased",
         commit: true,
         commitArgs: ["-S"],
         tag: true,
