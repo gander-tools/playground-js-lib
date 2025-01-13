@@ -1,5 +1,5 @@
 {
-    "template": "keepachangelog",
+    "template": "compact",
     "package": true,
     "unreleased": true,
     "commitLimit": false,
