@@ -25,7 +25,7 @@ export default {
             "NI_DEFAULT_AGENT='npm' nr prepack",
             "NI_DEFAULT_AGENT='npm' nr lint:package",
         ],
-        "after:bump": "NI_DEFAULT_AGENT='npm' nr git-cliff --output CHANGELOG.md",
+        "after:bump": "NI_DEFAULT_AGENT='npm' nr git-cliff --output CHANGELOG.md --tag ${version}",
     },
     plugins: {
         "@release-it/bumper": {
