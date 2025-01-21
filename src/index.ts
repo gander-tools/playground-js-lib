@@ -1,10 +1,10 @@
-import { computed, type Ref } from "@vue/reactivity";
+import { type Ref, computed } from '@vue/reactivity'
 
 /**
  * This function adds the two passed numbers together.
  */
 export function add(a: number, b: number): number {
-    return a + b;
+    return a + b
 }
 
 /**
@@ -25,5 +25,5 @@ export function add(a: number, b: number): number {
  * ```
  */
 export function addRef(a: Ref<number>, b: Ref<number>): Ref<number> {
-    return computed(() => a.value + b.value);
+    return computed(() => a.value + b.value)
 }
