@@ -26,23 +26,19 @@
             "default": "./dist/index.mjs"
         }
     },
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
         "check": "biome check",
-        "fix": "biome check --write",
         "format": "biome format",
         "format:fix": "biome format --write",
         "lint": "biome lint",
         "lint:fix": "biome lint --write",
-        "lint:package": "publint --pack auto",
         "prepack": "pkgroll --clean-dist --sourcemap --minify",
+        "publint": "publint --pack auto",
         "release": "release-it --only-version",
-        "release:dry": "release-it --dry-run --no-git.requireCleanWorkingDir --no-git.requireBranch",
         "test": "vitest",
         "test:coverage": "vitest --coverage",
         "test:run": "vitest run",
@@ -50,20 +46,19 @@
         "test:watch": "vitest watch"
     },
     "devDependencies": {
-        "@antfu/ni": "^23.2.0",
         "@biomejs/biome": "1.9.4",
-        "@release-it/bumper": "^7.0.0",
-        "@types/bun": "^1.1.16",
-        "@types/node": "^22.10.5",
+        "@release-it/bumper": "^7.0.1",
+        "@types/bun": "^1.2.2",
+        "@types/node": "^22.13.0",
         "@vitest/coverage-v8": "2.1.8",
-        "@vitest/ui": "^2.1.8",
+        "@vitest/ui": "^3.0.5",
         "@vue/reactivity": "^3.5.13",
-        "git-cliff": "^2.7.0",
+        "git-cliff": "^2.8.0",
+        "lefthook": "^1.10.10",
         "pkgroll": "^2.6.1",
-        "publint": "^0.3.1",
-        "release-it": "^18.1.1",
-        "typescript-eslint": "^8.19.1",
-        "vitest": "^2.1.8"
+        "publint": "^0.3.2",
+        "release-it": "^18.1.2",
+        "vitest": "^3.0.5"
     },
     "peerDependencies": {
         "@vue/reactivity": "^3.0.0"

@@ -2,7 +2,7 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "NI_DEFAULT_AGENT='npm' nr git-cliff --unreleased",
+        changelog: "bun run git-cliff --unreleased",
         commit: true,
         commitArgs: ["-S"],
         tag: true,
@@ -16,16 +16,8 @@ export default {
         publish: false,
     },
     hooks: {
-        "before:init": [
-            //prettier-ignore
-            "NI_DEFAULT_AGENT='npm' nr test:run",
-            "NI_DEFAULT_AGENT='npm' nr test:types",
-            "NI_DEFAULT_AGENT='npm' nr lint",
-            "NI_DEFAULT_AGENT='npm' nr lint:format",
-            "NI_DEFAULT_AGENT='npm' nr prepack",
-            "NI_DEFAULT_AGENT='npm' nr lint:package",
-        ],
-        "after:bump": "NI_DEFAULT_AGENT='npm' nr git-cliff --output CHANGELOG.md --tag ${version}",
+        "before:init": ["bun run test:run", "bun run test:types", "bun run check", "bun run prepack", "bun run publint"],
+        "after:bump": "bun run git-cliff --output CHANGELOG.md --tag ${version}",
     },
     plugins: {
         "@release-it/bumper": {
