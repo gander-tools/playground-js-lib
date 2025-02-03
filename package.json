@@ -1,6 +1,6 @@
 {
     "name": "@gander-tools/playground",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "license": "MIT",
     "type": "commonjs",
     "engines": {
@@ -26,7 +26,9 @@
             "default": "./dist/index.mjs"
         }
     },
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "publishConfig": {
         "access": "public"
     },

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.3] - 2025-02-03
+
+### 🚀 Features
+
+- *(dep)* Trying new dependabot bun support
+
+### 💼 Other
+
+- Replace eslint and prettier by biome
+
+### ⚙️ Miscellaneous Tasks
+
+- Update configs
+- Biome reformat
+
 ## [0.2.2] - 2025-01-13
 
 ### ⚙️ Miscellaneous Tasks
