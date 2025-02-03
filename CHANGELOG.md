@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4] - 2025-02-03
+
+### ⚙️ Miscellaneous Tasks
+
+- Biome reformat
+
 ## [0.2.3] - 2025-02-03
 
 ### 🚀 Features
