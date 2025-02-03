@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2025-02-03
+
+### ⚙️ Miscellaneous Tasks
+
+- Set node version ^22
+- PeerDependencies optional
+
 ## [0.2.4] - 2025-02-03
 
 ### ⚙️ Miscellaneous Tasks
