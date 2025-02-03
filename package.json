@@ -26,9 +26,7 @@
             "default": "./dist/index.mjs"
         }
     },
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "publishConfig": {
         "access": "public"
     },
