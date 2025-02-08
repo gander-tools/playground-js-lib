@@ -10,7 +10,8 @@ export default {
         push: true,
     },
     github: {
-        release: false,
+        release: true,
+        releaseNotes: "See the [CHANGELOG.md](https://github.com/gander-tools/playground-js-lib/blob/master/CHANGELOG.md)",
     },
     npm: {
         publish: false,
