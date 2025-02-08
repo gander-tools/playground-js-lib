@@ -3,5 +3,5 @@
 #
  pre-commit:
    jobs:
-     - run: biome check --write
+     - run: bun run check:fix
        stage_fixed: true
