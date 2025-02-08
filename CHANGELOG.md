@@ -1,19 +1,31 @@
 # Changelog
 
-## [0.3.0] - 2025-02-03
+## [0.3.1](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.3.0..0.3.1) - 2025-02-08
+
+### 💼 Other
+
+- Ci config
+- Ci config
+
+### ⚙️ Miscellaneous Tasks
+
+- Changelog experiments
+- Configure lefthook
+
+## [0.3.0](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.2.4..v0.3.0) - 2025-02-03
 
 ### ⚙️ Miscellaneous Tasks
 
 - Set node version ^22
 - PeerDependencies optional
 
-## [0.2.4] - 2025-02-03
+## [0.2.4](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.2.3..v0.2.4) - 2025-02-03
 
 ### ⚙️ Miscellaneous Tasks
 
 - Biome reformat
 
-## [0.2.3] - 2025-02-03
+## [0.2.3](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.2.2..v0.2.3) - 2025-02-03
 
 ### 🚀 Features
 
@@ -28,13 +40,13 @@
 - Update configs
 - Biome reformat
 
-## [0.2.2] - 2025-01-13
+## [0.2.2](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.2.1..v0.2.2) - 2025-01-13
 
 ### ⚙️ Miscellaneous Tasks
 
 - Sprawdzam 2
 
-## [0.2.1] - 2025-01-13
+## [0.2.1](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.2.0..v0.2.1) - 2025-01-13
 
 ### 🚀 Features
 
@@ -44,7 +56,7 @@
 
 - Sprawdzam
 
-## [0.2.0] - 2025-01-13
+## [0.2.0](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.1.3..v0.2.0) - 2025-01-13
 
 ### 🚀 Features
 
@@ -54,13 +66,13 @@
 
 - Remove script version
 
-## [0.1.3] - 2025-01-13
+## [0.1.3](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.1.2..v0.1.3) - 2025-01-13
 
 ### 🚀 Features
 
 - Change changelog again
 
-## [0.1.2] - 2025-01-13
+## [0.1.2](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.1.1..v0.1.2) - 2025-01-13
 
 ### 🚀 Features
 
@@ -70,7 +82,7 @@
 
 - Naaah
 
-## [0.1.1] - 2025-01-13
+## [0.1.1](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.1.0..v0.1.1) - 2025-01-13
 
 ### 🚀 Features
 
@@ -80,7 +92,7 @@
 
 - Prettier ignore CHANGELOG.md
 
-## [0.1.0] - 2025-01-13
+## [0.1.0](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.11..v0.1.0) - 2025-01-13
 
 ### 🚀 Features
 
@@ -91,13 +103,13 @@
 - Changelog fix #10
 - Changelog test
 
-## [0.0.6] - 2025-01-12
+## [0.0.6](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.5..v0.0.6) - 2025-01-12
 
 ### 💼 Other
 
 - Publish on tag push
 
-## [0.0.5] - 2025-01-06
+## [0.0.5](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.4..v0.0.5) - 2025-01-06
 
 ### 💼 Other
 
@@ -107,7 +119,7 @@
 
 - Release v0.0.5
 
-## [0.0.4] - 2025-01-05
+## [0.0.4](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.3..v0.0.4) - 2025-01-05
 
 ### 💼 Other
 
@@ -117,7 +129,7 @@
 
 - Release v0.0.4
 
-## [0.0.3] - 2025-01-04
+## [0.0.3](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.2..v0.0.3) - 2025-01-04
 
 ### 📚 Documentation
 
@@ -127,7 +139,7 @@
 
 - Release v0.0.3
 
-## [0.0.2] - 2025-01-04
+## [0.0.2](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/v0.0.1..v0.0.2) - 2025-01-04
 
 ### 📚 Documentation
 
