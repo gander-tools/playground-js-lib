@@ -3,5 +3,6 @@
 #
  pre-commit:
    jobs:
+     - run: bun run git-cliff --output
      - run: bun run check:fix
        stage_fixed: true
