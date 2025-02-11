@@ -18,7 +18,8 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version-file: 'package.json'
+                  node-version: '20.x'
+            - run: npm ci
             - run: npm publish --provenance --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -38,7 +39,7 @@ jobs:
             - name: Install deno
               uses: denoland/setup-deno@v2
               with:
-                  deno-version: v2.x
+                  deno-version: 2.x
 
             - name: Install dependencies
               run: deno install --no-lock --allow-scripts
