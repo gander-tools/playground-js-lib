@@ -17,6 +17,10 @@ body = """
   https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- endmacro -%}
 
+{% if message %}
+    {{ message }}
+{% endif %}\
+
 {% if version %}\
     {% if previous.version %}\
         ## [{{ version | trim_start_matches(pat="v") }}]\
