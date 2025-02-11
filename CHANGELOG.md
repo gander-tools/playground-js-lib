@@ -1,15 +1,20 @@
 # Changelog
 
+## [unreleased]
 
+### 🐛 Bug Fixes
 
-## [0.4.0](https://github.com/gander-tools/playground-js-lib/compare/v0.3.6..0.4.0) - 2025-02-11
+- Strip Release commits
+- Breh
+- Nope changelog
+- Pre-commit
+
+## [0.4.0](https://github.com/gander-tools/playground-js-lib/compare/v0.3.6..v0.4.0) - 2025-02-11
 
 ### ⚙️ Miscellaneous Tasks
 
 - Try some changelog
 - Add CHANGELOG.md link only to release message
-
-Release 0.3.6
 
 ## [0.3.6](https://github.com/gander-tools/playground-js-lib/compare/v0.3.5..v0.3.6) - 2025-02-11
 
@@ -23,23 +28,17 @@ Release 0.3.6
 - Check4 publishing
 - Whats wrong
 
-Release 0.3.5
-
 ## [0.3.5](https://github.com/gander-tools/playground-js-lib/compare/v0.3.4..v0.3.5) - 2025-02-11
 
 ### ⚙️ Miscellaneous Tasks
 
 - Check2 publishing
 
-Release 0.3.4
-
 ## [0.3.4](https://github.com/gander-tools/playground-js-lib/compare/v0.3.3..v0.3.4) - 2025-02-11
 
 ### ⚙️ Miscellaneous Tasks
 
 - Check publishing
-
-Release 0.3.3
 
 ## [0.3.3](https://github.com/gander-tools/playground-js-lib/compare/v0.3.2..v0.3.3) - 2025-02-08
 
@@ -48,15 +47,11 @@ Release 0.3.3
 - Changelog note
 - Changelog note
 
-Release 0.3.2
-
 ## [0.3.2](https://github.com/gander-tools/playground-js-lib/compare/v0.3.1..v0.3.2) - 2025-02-08
 
 ### ⚙️ Miscellaneous Tasks
 
 - Changelog experiments failed
-
-Release 0.3.1
 
 ## [0.3.1](https://github.com/gander-tools/playground-js-lib/compare/v0.3.0..v0.3.1) - 2025-02-08
 
@@ -70,8 +65,6 @@ Release 0.3.1
 - Changelog experiments
 - Configure lefthook
 
-Release 0.3.0
-
 ## [0.3.0](https://github.com/gander-tools/playground-js-lib/compare/v0.2.4..v0.3.0) - 2025-02-03
 
 ### ⚙️ Miscellaneous Tasks
@@ -79,15 +72,11 @@ Release 0.3.0
 - Set node version ^22
 - PeerDependencies optional
 
-Release 0.2.4
-
 ## [0.2.4](https://github.com/gander-tools/playground-js-lib/compare/v0.2.3..v0.2.4) - 2025-02-03
 
 ### ⚙️ Miscellaneous Tasks
 
 - Biome reformat
-
-Release 0.2.3
 
 ## [0.2.3](https://github.com/gander-tools/playground-js-lib/compare/v0.2.2..v0.2.3) - 2025-02-03
 
@@ -104,15 +93,11 @@ Release 0.2.3
 - Update configs
 - Biome reformat
 
-Release 0.2.2
-
 ## [0.2.2](https://github.com/gander-tools/playground-js-lib/compare/v0.2.1..v0.2.2) - 2025-01-13
 
 ### ⚙️ Miscellaneous Tasks
 
 - Sprawdzam 2
-
-Release 0.2.1
 
 ## [0.2.1](https://github.com/gander-tools/playground-js-lib/compare/v0.2.0..v0.2.1) - 2025-01-13
 
@@ -124,8 +109,6 @@ Release 0.2.1
 
 - Sprawdzam
 
-Release 0.2.0
-
 ## [0.2.0](https://github.com/gander-tools/playground-js-lib/compare/v0.1.3..v0.2.0) - 2025-01-13
 
 ### 🚀 Features
@@ -136,15 +119,11 @@ Release 0.2.0
 
 - Remove script version
 
-Release 0.1.3
-
 ## [0.1.3](https://github.com/gander-tools/playground-js-lib/compare/v0.1.2..v0.1.3) - 2025-01-13
 
 ### 🚀 Features
 
 - Change changelog again
-
-Release 0.1.2
 
 ## [0.1.2](https://github.com/gander-tools/playground-js-lib/compare/v0.1.1..v0.1.2) - 2025-01-13
 
@@ -156,8 +135,6 @@ Release 0.1.2
 
 - Naaah
 
-Release 0.1.1: [CHANGELOG](https://github.com/gander-tools/playground-js-lib/blob/master/CHANGELOG.md)
-
 ## [0.1.1](https://github.com/gander-tools/playground-js-lib/compare/v0.1.0..v0.1.1) - 2025-01-13
 
 ### 🚀 Features
@@ -167,8 +144,6 @@ Release 0.1.1: [CHANGELOG](https://github.com/gander-tools/playground-js-lib/blo
 ### 🐛 Bug Fixes
 
 - Prettier ignore CHANGELOG.md
-
-Release 0.1.0
 
 ## [0.1.0](https://github.com/gander-tools/playground-js-lib/compare/v0.0.11..v0.1.0) - 2025-01-13
 
@@ -181,15 +156,11 @@ Release 0.1.0
 - Changelog fix #10
 - Changelog test
 
-Release 0.0.6
-
 ## [0.0.6](https://github.com/gander-tools/playground-js-lib/compare/v0.0.5..v0.0.6) - 2025-01-12
 
 ### 💼 Other
 
 - Publish on tag push
-
-Release 0.0.5
 
 ## [0.0.5](https://github.com/gander-tools/playground-js-lib/compare/v0.0.4..v0.0.5) - 2025-01-06
 
@@ -201,8 +172,6 @@ Release 0.0.5
 
 - Release v0.0.5
 
-Release 0.0.4
-
 ## [0.0.4](https://github.com/gander-tools/playground-js-lib/compare/v0.0.3..v0.0.4) - 2025-01-05
 
 ### 💼 Other
@@ -212,8 +181,6 @@ Release 0.0.4
 ### ⚙️ Miscellaneous Tasks
 
 - Release v0.0.4
-
-Release 0.0.3
 
 ## [0.0.3](https://github.com/gander-tools/playground-js-lib/compare/v0.0.2..v0.0.3) - 2025-01-04
 
@@ -225,8 +192,6 @@ Release 0.0.3
 
 - Release v0.0.3
 
-Release 0.0.2
-
 ## [0.0.2](https://github.com/gander-tools/playground-js-lib/compare/v0.0.1..v0.0.2) - 2025-01-04
 
 ### 📚 Documentation
@@ -236,8 +201,6 @@ Release 0.0.2
 ### ⚙️ Miscellaneous Tasks
 
 - Release v0.0.2
-
-Release 0.0.1
 
 ## [0.0.1] - 2025-01-04
 
