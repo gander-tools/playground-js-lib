@@ -1,6 +1,18 @@
 # Changelog
 
-## [0.3.5](https://github.com/gander-tools/playground-js-lib/compare/v0.3.4..0.3.5) - 2025-02-11
+## [0.3.6](https://github.com/gander-tools/playground-js-lib/compare/v0.3.5..0.3.6) - 2025-02-11
+
+### 🐛 Bug Fixes
+
+- Npm pkg fix
+
+### ⚙️ Miscellaneous Tasks
+
+- Check3 publishing
+- Check4 publishing
+- Whats wrong
+
+## [0.3.5](https://github.com/gander-tools/playground-js-lib/compare/v0.3.4..v0.3.5) - 2025-02-11
 
 ### ⚙️ Miscellaneous Tasks
 
