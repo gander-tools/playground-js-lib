@@ -8,6 +8,7 @@
 - Breh
 - Nope changelog
 - Pre-commit
+- CHANGELOG.md
 
 ## [0.4.0](https://github.com/gander-tools/playground-js-lib/compare/v0.3.6..v0.4.0) - 2025-02-11
 
