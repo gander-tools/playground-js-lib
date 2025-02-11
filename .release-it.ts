@@ -11,7 +11,7 @@ export default {
     },
     github: {
         release: true,
-        releaseNotes: "echo 'See the [CHANGELOG.md]'",
+        releaseNotes: "echo 'See the [CHANGELOG.md](CHANGELOG.md)'",
     },
     npm: {
         publish: false,
