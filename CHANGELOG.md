@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.5.0](https://github.com/gander-tools/playground-js-lib/compare/v0.4.2..0.5.0) - 2025-02-17
+## [0.5.1](https://github.com/gander-tools/playground-js-lib/compare/v0.5.0..0.5.1) - 2025-02-17
+
+### 🚜 Refactor
+
+- .release-it.ts
+
+## [0.5.0](https://github.com/gander-tools/playground-js-lib/compare/v0.4.2..v0.5.0) - 2025-02-17
 
 ### 🚀 Features
 
