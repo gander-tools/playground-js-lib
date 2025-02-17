@@ -2,6 +2,16 @@
 
 ## [unreleased]
 
+### ⚙️ Miscellaneous Tasks
+
+- Play with history and changelog
+- Play with history and changelog
+- Nie zapisuje się changelog
+- Play with history and changelog
+- Co jest?
+
+## [0.4.1](https://github.com/gander-tools/playground-js-lib/compare/v0.4.0..v0.4.1) - 2025-02-11
+
 ### 🐛 Bug Fixes
 
 - Strip Release commits
