@@ -2,7 +2,7 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "bun run git-cliff --unreleased",
+        changelog: "bunx git-cliff --unreleased",
         commit: true,
         commitArgs: ["-S"],
         tag: true,
