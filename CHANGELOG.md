@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased]
+## [0.4.2](https://github.com/gander-tools/playground-js-lib/compare/v0.4.1..0.4.2) - 2025-02-17
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -9,6 +9,7 @@
 - Nie zapisuje się changelog
 - Play with history and changelog
 - Co jest?
+- Play with history and changelog
 
 ## [0.4.1](https://github.com/gander-tools/playground-js-lib/compare/v0.4.0..v0.4.1) - 2025-02-11
 
