@@ -8,6 +8,3 @@ you are looking for code that was created by making and solving mistakes, please
 bun install
 bun run release
 ```
-
-
-
