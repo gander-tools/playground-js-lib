@@ -2,7 +2,7 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "npx git-cliff --unreleased",
+        changelog: "bunx git-cliff --unreleased",
         commit: true,
         commitArgs: ["-S"],
         tag: true,
@@ -17,8 +17,8 @@ export default {
         publish: false,
     },
     hooks: {
-        "before:init": ["npm run test:run", "npm run test:types", "npm run check", "npm run prepack", "npm run publint"],
-        "after:bump": ["npx git-cliff --output CHANGELOG.md --tag ${version}", "npm run check:fix"],
+        "before:init": ["bun run test:run", "bun run test:types", "bun run check", "bun run prepack", "bun run publint"],
+        "after:bump": ["bunx git-cliff --output CHANGELOG.md --tag ${version}", "bun run check:fix"],
     },
     plugins: {
         "@release-it/bumper": {
