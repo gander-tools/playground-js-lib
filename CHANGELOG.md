@@ -1,6 +1,16 @@
 # Changelog
 
-## [0.4.2](https://github.com/gander-tools/playground-js-lib/compare/v0.4.1..0.4.2) - 2025-02-17
+## [0.5.0](https://github.com/gander-tools/playground-js-lib/compare/v0.4.2..0.5.0) - 2025-02-17
+
+### 🚀 Features
+
+- Sandbox
+
+### ⚙️ Miscellaneous Tasks
+
+- Cleanup
+
+## [0.4.2](https://github.com/gander-tools/playground-js-lib/compare/v0.4.1..v0.4.2) - 2025-02-17
 
 ### ⚙️ Miscellaneous Tasks
 
