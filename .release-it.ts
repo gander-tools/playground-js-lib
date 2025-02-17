@@ -18,7 +18,7 @@ export default {
     },
     hooks: {
         "before:init": ["npm run test:run", "npm run test:types", "npm run check", "npm run prepack", "npm run publint"],
-        "after:bump": ["npm run git-cliff --output CHANGELOG.md --tag ${version}", "npm run check --write"],
+        "after:bump": ["npx git-cliff --output CHANGELOG.md --tag ${version}", "npm run check --write"],
     },
     plugins: {
         "@release-it/bumper": {
