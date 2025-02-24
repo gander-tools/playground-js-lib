@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.7.0](https://github.com/gander-tools/playground-js-lib/compare/v0.6.1..0.7.0) - 2025-02-17
+## [0.7.1](https://github.com/gander-tools/playground-js-lib/compare/v0.7.0..0.7.1) - 2025-02-24
+
+### 🐛 Bug Fixes
+
+- Publish uses bun
+
+## [0.7.0](https://github.com/gander-tools/playground-js-lib/compare/v0.6.1..v0.7.0) - 2025-02-17
 
 ### 🚜 Refactor
 
