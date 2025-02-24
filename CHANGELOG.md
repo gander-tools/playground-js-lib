@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.2](https://github.com/gander-tools/playground-js-lib/compare/v0.7.1..0.7.2) - 2025-02-24
+## [0.7.2](https://github.com/gander-tools/playground-js-lib/compare/v0.7.1..v0.7.2) - 2025-02-24
 
 ### 🐛 Bug Fixes
 
