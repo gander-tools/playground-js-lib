@@ -17,8 +17,8 @@ export default {
         publish: false,
     },
     hooks: {
-        "before:init": ["bun run test:run", "bun run test:types", "bun run check", "bun run prepack", "bun run publint"],
-        "after:bump": ["bunx git-cliff --output CHANGELOG.md --tag ${version}", "bun run check:fix"],
+        "before:init": ["bun run test:run", "bun run typecheck", "bun run check", "bun run prepack", "bun run publint"],
+        "after:bump": ["bun run git-cliff --output CHANGELOG.md --tag ${version}", "bun run check:fix"],
     },
     plugins: {
         "@release-it/bumper": {
