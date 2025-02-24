@@ -18,10 +18,12 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: '20.x'
+                  node-version: "20.x"
                   registry-url: "https://registry.npmjs.org"
 
-            - run: npm install
+            - uses: oven-sh/setup-bun@v2
+
+            - run: bun install
 
             - run: npm publish --provenance --access public
               env:
@@ -42,7 +44,7 @@ jobs:
             - name: Install deno
               uses: denoland/setup-deno@v2
               with:
-                  deno-version: 2.x
+                  deno-version: v2.x
 
             - name: Install dependencies
               run: deno install --no-lock --allow-scripts
