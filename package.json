@@ -54,7 +54,7 @@
         "@vitest/ui": "^3.0.7",
         "@vue/reactivity": "^3.5.13",
         "git-cliff": "^2.8.0",
-        "lefthook": "^1.11.0",
+        "lefthook": "^2.0.0",
         "pkgroll": "^2.11.0",
         "publint": "^0.3.6",
         "release-it": "^18.1.2",
