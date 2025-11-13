@@ -35,6 +35,8 @@ jobs:
                     fi
 
             -   name: Cleanup package versions
+                env:
+                    GH_TOKEN: ${{ secrets.PAT_PACKAGES }}
                 run: |
                     OWNER="${{ github.repository_owner }}"
                     REPO="${{ github.event.repository.name }}"
