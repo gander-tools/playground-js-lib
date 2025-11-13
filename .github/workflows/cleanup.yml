@@ -1,0 +1,44 @@
+name: Hourly Cleanup
+
+on:
+    schedule:
+        -   cron: '0 * * * *'  # Co godzinę o pełnej godzinie
+    workflow_dispatch:      # Manualny trigger dla testowania
+
+# Top-level permissions: read-only by default (principle of least privilege)
+permissions:
+    contents: read
+
+env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+    cleanup-packages:
+        name: Clean Old Package Versions
+        runs-on: ubuntu-latest
+        # Minimal permissions required for package cleanup
+        permissions:
+            packages: write  # Required to delete package versions via GitHub Packages API
+            contents: read   # Required for checkout
+
+        steps:
+            -   name: Check rate limit before start
+                run: |
+                    rate_info=$(gh api rate_limit --jq '.resources.core')
+                    echo "Rate limit info: $rate_info"
+                    remaining=$(echo "$rate_info" | jq -r '.remaining')
+                    echo "Remaining requests: $remaining"
+
+                    if [ "$remaining" -lt 100 ]; then
+                      echo "::warning::Rate limit too low ($remaining remaining), skipping cleanup"
+                      exit 0
+                    fi
+
+            -   name: Cleanup package versions
+                run: |
+                    OWNER="${{ github.repository_owner }}"
+                    REPO="${{ github.event.repository.name }}"
+                    PACKAGE_TYPE="container"
+
+                    gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /orgs/${OWNER}/packages?package_type=container
+
