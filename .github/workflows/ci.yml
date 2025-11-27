@@ -31,7 +31,7 @@ jobs:
                 run: bun run typecheck
 
             -   name: Run linter
-                run: bun run check
+                run: bun run lint
 
             -   name: Run unit tests
                 run: bun run test:run
