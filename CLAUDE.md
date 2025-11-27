@@ -150,6 +150,88 @@ npm install  # or bun install
 npx lefthook install
 ```
 
+## Claude Code Hooks
+
+This repository includes Claude Code hooks for automated development environment setup and code quality checks.
+
+### Configured Hooks
+
+Hooks are configured in `.claude/settings.json`:
+
+**SessionStart Hook**:
+- Runs: `npm install`
+- Automatically installs dependencies when Claude Code session starts
+- Timeout: 300 seconds (5 minutes)
+
+**PostToolUse Hook**:
+- Runs: `npm run check` (Biome linting + formatting)
+- Triggered after Write/Edit operations
+- Provides immediate feedback on code quality issues
+- Timeout: 120 seconds (2 minutes)
+
+### Configuration Example
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm install",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Local Customization
+
+Create `.claude/settings.local.json` for local hook overrides (not version-controlled):
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Custom validation here'",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Benefits
+
+- **Automatic setup**: Dependencies installed automatically on session start
+- **Code quality**: Instant feedback on style issues after editing
+- **Simple configuration**: Inline commands in JSON, no separate scripts needed
+- **Consistency**: Same development environment for all contributors using Claude Code
+
 ## GitHub Actions
 
 ### Version Pinning Requirement
@@ -400,6 +482,7 @@ The old `bun run release` command (using release-it) is still available but depr
   - Example: Use `npm run check:fix` instead of `bun run check:fix`
   - Example: Use `npm install` instead of `bun install`
   - Example: Use `npm test` instead of `bun test`
+- **Claude Code hooks are configured**: SessionStart hook runs `npm install` automatically, PostToolUse hook runs `npm run check` after file edits
 - Always run `npm run check:fix` and `npm run typecheck` before committing (when in Claude Code)
 - **Conventional Commits are ENFORCED** - all commit messages MUST follow the format (e.g., `feat:`, `fix:`, `chore:`)
   - Commits will be rejected locally by Lefthook + commitlint if format is invalid
