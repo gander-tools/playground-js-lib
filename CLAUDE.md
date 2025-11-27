@@ -150,6 +150,69 @@ npm install  # or bun install
 npx lefthook install
 ```
 
+## Claude Code Hooks
+
+This repository includes Claude Code hooks for automated development environment setup and code quality checks.
+
+### Configured Hooks
+
+**SessionStart Hook** (`.claude/hooks/session-start.sh`):
+- Automatically runs when Claude Code session starts
+- Installs npm dependencies if not present
+- Ensures Lefthook git hooks are installed
+- Displays project status, git status, and important reminders
+- Output is automatically added to Claude's context
+
+**PostToolUse Hook** (`.claude/hooks/post-tool-use.sh`):
+- Runs after Write/Edit/MultiEdit operations
+- Validates code style with Biome (`npm run check`)
+- Runs TypeScript type checking (`npm run typecheck`)
+- Provides feedback on code quality issues
+- Non-blocking (always exits successfully)
+
+### Hook Configuration
+
+Hooks are configured in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [...],
+    "PostToolUse": [...]
+  }
+}
+```
+
+### Local Customization
+
+Create `.claude/settings.local.json` for local hook overrides (not version-controlled):
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Custom hook'",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Benefits
+
+- **Automatic setup**: Dependencies and git hooks installed on session start
+- **Code quality**: Instant feedback on style and type errors after editing
+- **Consistency**: Same development environment for all contributors using Claude Code
+- **Non-intrusive**: Hooks provide feedback but don't block operations
+
 ## GitHub Actions
 
 ### Version Pinning Requirement
@@ -400,6 +463,7 @@ The old `bun run release` command (using release-it) is still available but depr
   - Example: Use `npm run check:fix` instead of `bun run check:fix`
   - Example: Use `npm install` instead of `bun install`
   - Example: Use `npm test` instead of `bun test`
+- **Claude Code hooks are configured**: SessionStart hook runs `npm install` automatically, PostToolUse hook runs `npm run check` after file edits
 - Always run `npm run check:fix` and `npm run typecheck` before committing (when in Claude Code)
 - **Conventional Commits are ENFORCED** - all commit messages MUST follow the format (e.g., `feat:`, `fix:`, `chore:`)
   - Commits will be rejected locally by Lefthook + commitlint if format is invalid
