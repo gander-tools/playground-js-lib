@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.3](https://github.com/gander-tools/playground-js-lib/compare/v0.10.2...v0.10.3) (2025-11-27)
+
+
+### Documentation
+
+* compact claude.md and prioritize conventional commits section ([9dfdf48](https://github.com/gander-tools/playground-js-lib/commit/9dfdf4809032a9733148436572cd1d8ef048cdf7))
+* compact claude.md and prioritize conventional commits section ([a0d7554](https://github.com/gander-tools/playground-js-lib/commit/a0d755495334db2c92bedcfb5f4663d19cfbddd8))
+
 ## [0.10.2](https://github.com/gander-tools/playground-js-lib/compare/v0.10.1...v0.10.2) (2025-11-27)
 
 
