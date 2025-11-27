@@ -11,7 +11,7 @@ This is a playground project designed for testing and experimenting with multi-s
 - **Testing**: Vitest with coverage
 - **Linting/Formatting**: Biome 1.9
 - **Git Hooks**: Lefthook
-- **Release Management**: release-it with git-cliff for changelog generation
+- **Release Management**: Release Please (automated via GitHub Actions)
 - **Node Version**: ^20 || >=22
 - **Optional Dependencies**: Vue 3 Reactivity API
 
@@ -56,7 +56,7 @@ The library provides simple utility functions:
 ### Build & Release
 - `bun run prepack` - Build package (generates CJS/ESM/types in dist/)
 - `bun run publint` - Validate package for publication
-- `bun run release` - Create new version with release-it
+- `bun run release` - Manual release with release-it (legacy, use Release Please instead)
 
 ## Development Workflow
 
@@ -65,7 +65,8 @@ The library provides simple utility functions:
 3. **Testing**: Ensure tests pass with `bun run test:run`
 4. **Type Safety**: Verify with `bun run typecheck`
 5. **Building**: Test build with `bun run prepack`
-6. **Releasing**: Use `bun run release` for version management
+6. **Committing**: Use Conventional Commits format (e.g., `feat:`, `fix:`)
+7. **Releasing**: Automated via Release Please when merging to `main`
 
 ## Module System
 
@@ -79,16 +80,66 @@ Lefthook is configured to run pre-commit checks. Hooks may include linting, form
 
 ## Release Process
 
-This project uses:
-- **release-it** for version bumping and git tag management
-- **git-cliff** for automated changelog generation
-- Package published to npm under `@gander-tools/playground`
+This project uses **Release Please** for fully automated release management via GitHub Actions.
+
+### How It Works
+
+1. **Automatic PR Creation**: When you merge commits to `main`, Release Please automatically:
+   - Analyzes commit messages (using Conventional Commits format)
+   - Determines the next version number (semver)
+   - Updates `CHANGELOG.md` with new entries
+   - Creates/updates a Release PR
+
+2. **Release Triggers**: When you merge the Release PR:
+   - Automatically runs all quality checks (tests, typecheck, lint)
+   - Builds the package
+   - Publishes to npm with provenance
+   - Publishes to JSR
+   - Creates a GitHub release with the version tag
+
+### Commit Message Format
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+- `feat: add new feature` → Minor version bump (0.x.0)
+- `fix: resolve bug` → Patch version bump (0.0.x)
+- `feat!: breaking change` → Major version bump (x.0.0)
+- `chore: update deps` → No release (internal changes)
+- `docs: update readme` → Included in changelog
+
+**Breaking changes**: Add `!` after the type or include `BREAKING CHANGE:` in commit body.
+
+### Release Workflow
+
+1. **Development**:
+   - Make changes and commit with conventional commit messages
+   - Push to `main` branch
+
+2. **Release Please automatically**:
+   - Creates/updates a Release PR
+   - Accumulates changes until you're ready to release
+
+3. **Publishing**:
+   - Review and merge the Release PR
+   - GitHub Actions automatically publishes to npm and JSR
+
+### Configuration Files
+
+- `.github/workflows/release-please.yml` - GitHub Actions workflow
+- `release-please-config.json` - Release Please configuration
+- `.release-please-manifest.json` - Current version tracking
+
+### Manual Release (Legacy)
+
+The old `bun run release` command (using release-it) is still available but deprecated in favor of the automated Release Please workflow.
 
 ## Notes for AI Assistants
 
 - This is a **learning/experimental project** - feel free to suggest improvements
 - Always run `bun run check:fix` and `bun run typecheck` before committing
+- **Use Conventional Commits format** for all commit messages (e.g., `feat:`, `fix:`, `chore:`)
 - Maintain compatibility with Node 20+ and Node 22+
 - Keep both CJS and ESM exports working
 - Update tests when adding new functionality
 - Follow existing code style (managed by Biome)
+- Releases are fully automated via Release Please - just merge to main with proper commit messages
