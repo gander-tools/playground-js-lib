@@ -126,6 +126,27 @@ Conventional Commits enable:
 - `npm run prepack` - Build CJS/ESM to dist/
 - `npm run publint` - Validate package
 
+## Package Lock Files
+
+**⚠️ IMPORTANT:** This project **does NOT maintain package lock files** (`package-lock.json`, `npm-shrinkwrap.json`).
+
+**Why:**
+- Learning/experimental project - dependencies update frequently
+- Simpler workflow for quick iterations
+- No production deployments requiring lock file stability
+
+**Implications:**
+- Always use `npm install` (NOT `npm ci`) - in local development and CI/CD
+- `npm ci` will fail because it requires a lock file
+- GitHub Actions workflows use `npm install` for dependency installation
+- Dependency versions are controlled by `package.json` semver ranges
+
+**In workflows:**
+```yaml
+- name: Install dependencies
+  run: npm install  # NOT npm ci
+```
+
 ## Development Workflow
 
 1. Edit files in `src/`
@@ -183,12 +204,12 @@ Configured in `.claude/settings.json` for automated development environment:
 **Version Pinning (Required):**
 All actions MUST use SHA-pinned versions for security:
 ```yaml
-- uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 ```
 
 **Standard Actions:**
-- `actions/checkout`: `34e114876b0b11c390a56381ad16ebd13914f8d5` (v4.3.1)
-- `actions/setup-node`: `49933ea5288caeca8642d1e84afbd3f7d6820020` (v4.4.0)
+- `actions/checkout`: `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` (v6.0.0)
+- `actions/setup-node`: `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` (v6.0.0)
 - `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
 - `amannn/action-semantic-pull-request`: `0723387faaf9b38adef4775cd42cfd5155ed6017` (v5.5.3)
 
@@ -216,14 +237,21 @@ Configure `master` branch to require passing `Test & Build` check before merging
 
    - uses: actions/setup-node@sha
      with:
-       registry-url: "https://registry.npmjs.org"
+       node-version: "22"
+       # registry-url NOT needed for Trusted Publishers with OIDC
+       # Removing it prevents deprecated 'always-auth=true' warnings
+
+   - run: npm install -g npm@11.5.1  # Required for Trusted Publishers
 
    - run: npm publish --provenance --access public
    ```
 
 **Key points:**
 - `--provenance` flag is **required** for trusted publishers (generates attestation)
+- **npm >= 11.5.1 required** for Trusted Publishers support
 - Workflow must have `id-token: write` permission
+- **DO NOT use `registry-url`** in setup-node (causes deprecated warnings)
+- **DO NOT use `always-auth`** or `scope`** (not needed with OIDC)
 - No secrets needed in GitHub repository settings
 - Publishes only from `master` branch via `release-please.yml` workflow
 
@@ -276,6 +304,7 @@ Configure `master` branch to require passing `Test & Build` check before merging
 **Development:**
 - Learning/experimental project - suggest improvements freely
 - Use `npm` (not `bun`) for all commands in Claude Code
+- **ALWAYS use `npm install` (NEVER `npm ci`)** - project does not maintain lock files
 - Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check`
 - Always run `npm run check:fix` + `npm run typecheck` before committing
 - Maintain Node 20+/22+ compatibility
