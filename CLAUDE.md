@@ -175,6 +175,108 @@ This project uses **controlled versioning** to prevent aggressive version bumps:
 - `release-please-config.json` - Release Please configuration
 - `.release-please-manifest.json` - Current version tracking
 
+### Advanced Release Please Control
+
+#### Draft Pull Requests (Preventing Accidental Merges)
+
+To prevent accidentally merging a Release PR, enable **draft mode** in `release-please-config.json`:
+
+```json
+{
+  "draft-pull-request": true,  // Change from false to true
+  "packages": {
+    ".": {
+      // ... your configuration
+    }
+  }
+}
+```
+
+This makes Release Please create PRs as **drafts** that must be manually marked as "Ready for review" before merging. Great for projects where you want an extra safety check.
+
+**Current setting**: `draft-pull-request: false` (PRs are immediately mergeable)
+
+#### Rejecting an Aggressive Version Bump
+
+If Release Please creates a PR with a version that's too aggressive (e.g., suggesting 1.0.0 when you're not ready):
+
+1. **Close the PR** - Click "Close pull request" on GitHub
+2. **Remove the label** - Remove the `autorelease: pending` label from the closed PR
+3. **Adjust configuration** - Update `release-please-config.json` with appropriate controls (e.g., `bump-minor-pre-major`)
+4. **Push new commits** - Release Please will create a new PR with correct version on next push to `master`
+
+**Important**: If you don't remove the `autorelease: pending` label, Release Please won't create new PRs (it checks for existing labeled PRs).
+
+#### What Happens to Existing PRs After Configuration Changes?
+
+**Existing open Release PRs will NOT automatically update their proposed version** when you change configuration options like `bump-minor-pre-major`.
+
+**Best practice after config changes:**
+1. Close the existing Release PR
+2. Remove the `autorelease: pending` label
+3. Make a new commit to `master` (even a small change like updating docs)
+4. Release Please will create a fresh PR with the new versioning rules
+
+#### Maintaining Parallel Release Branches (0.x and 1.x)
+
+To maintain multiple major versions simultaneously (e.g., bug fixes for 0.x while developing 1.x):
+
+1. **Create separate branches**:
+   ```bash
+   git checkout -b 0.x    # For 0.x maintenance
+   git checkout -b 1.x    # For 1.x development
+   ```
+
+2. **Create separate workflow files** for each branch:
+
+   `.github/workflows/release-0.x.yml`:
+   ```yaml
+   on:
+     push:
+       branches:
+         - 0.x
+   jobs:
+     release-please:
+       steps:
+         - uses: googleapis/release-please-action@...
+           with:
+             target-branch: 0.x
+             release-type: node
+   ```
+
+   `.github/workflows/release-1.x.yml`:
+   ```yaml
+   on:
+     push:
+       branches:
+         - 1.x
+   jobs:
+     release-please:
+       steps:
+         - uses: googleapis/release-please-action@...
+           with:
+             target-branch: 1.x
+             release-type: node
+   ```
+
+3. **Manage separately**:
+   - Each branch maintains its own `.release-please-manifest.json`
+   - Cherry-pick or backport bug fixes between branches as needed
+   - Release Please creates independent PRs for each branch
+
+**Note**: Release Please doesn't handle branch management or backporting - you must manually manage which commits go to which branches.
+
+#### Label System and PR Management
+
+Release Please uses labels to track PR state:
+- `autorelease: pending` - PR is waiting to be merged
+- `autorelease: triggered` - Release is in progress
+
+**Best practices**:
+- Always remove labels when closing PRs manually
+- Check for existing labeled PRs before expecting new ones
+- Use draft mode if you want to prevent quick accidental merges
+
 ### Manual Release (Legacy)
 
 The old `bun run release` command (using release-it) is still available but deprecated in favor of the automated Release Please workflow.
@@ -186,6 +288,8 @@ The old `bun run release` command (using release-it) is still available but depr
 - **Use Conventional Commits format** for all commit messages (e.g., `feat:`, `fix:`, `chore:`)
 - **Version bumps are controlled**: `feat:` → patch only, `feat!:` → minor only (pre-1.0)
 - To bump minor/major version, manually edit `.release-please-manifest.json`
+- **After changing Release Please config**: Close existing Release PR, remove `autorelease: pending` label, push new commit
+- Set `draft-pull-request: true` in config if you want PRs as drafts to prevent accidental merges
 - Maintain compatibility with Node 20+ and Node 22+
 - Keep both CJS and ESM exports working
 - Update tests when adding new functionality
