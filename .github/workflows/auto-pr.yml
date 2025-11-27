@@ -49,8 +49,23 @@ jobs:
                     PR_TITLE="[Claude AI] ${BRANCH_NAME#claude/}"
                     echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
 
+            -   name: Check for commits ahead of main
+                id: check-commits
+                run: |
+                    # Count commits ahead of main
+                    COMMIT_COUNT=$(git rev-list --count origin/main..HEAD)
+                    echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+
+                    if [ "$COMMIT_COUNT" -eq 0 ]; then
+                      echo "::warning::Branch has no commits ahead of main. Skipping PR creation."
+                      echo "has_commits=false" >> $GITHUB_OUTPUT
+                    else
+                      echo "::notice::Branch has $COMMIT_COUNT commit(s) ahead of main"
+                      echo "has_commits=true" >> $GITHUB_OUTPUT
+                    fi
+
             -   name: Create Pull Request
-                if: steps.check-pr.outputs.pr_exists == '0'
+                if: steps.check-pr.outputs.pr_exists == '0' && steps.check-commits.outputs.has_commits == 'true'
                 env:
                     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: |
@@ -95,9 +110,12 @@ jobs:
                 if: always()
                 run: |
                     BRANCH_NAME="${{ github.ref_name }}"
+                    COMMIT_COUNT="${{ steps.check-commits.outputs.commit_count }}"
 
-                    if [ "${{ steps.check-pr.outputs.pr_exists }}" -gt 0 ]; then
-                      echo "::notice::PR #${{ steps.check-pr.outputs.pr_number }} already exists for branch $BRANCH_NAME"
+                    if [ "${{ steps.check-commits.outputs.has_commits }}" == "false" ]; then
+                      echo "::warning::No PR created - branch $BRANCH_NAME has no commits ahead of main"
+                    elif [ "${{ steps.check-pr.outputs.pr_exists }}" -gt 0 ]; then
+                      echo "::notice::PR #${{ steps.check-pr.outputs.pr_number }} already exists for branch $BRANCH_NAME ($COMMIT_COUNT commits)"
                     else
-                      echo "::notice::New PR created for branch $BRANCH_NAME"
+                      echo "::notice::New PR created for branch $BRANCH_NAME ($COMMIT_COUNT commits)"
                     fi
