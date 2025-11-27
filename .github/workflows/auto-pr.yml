@@ -1,0 +1,103 @@
+name: Auto PR for Claude Branches
+
+on:
+    push:
+        branches:
+            - 'claude/**'
+
+permissions:
+    contents: read
+    pull-requests: write
+
+jobs:
+    create-pr:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
+            -   name: Check if PR already exists
+                id: check-pr
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+                    echo "Checking for existing PR from branch: $BRANCH_NAME"
+
+                    # Check if PR exists for this branch
+                    PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --json number --jq 'length')
+
+                    echo "pr_exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+
+                    if [ "$PR_EXISTS" -gt 0 ]; then
+                      PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number --jq '.[0].number')
+                      echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+                      echo "::notice::PR already exists: #$PR_NUMBER"
+                    fi
+
+            -   name: Extract session ID from branch name
+                id: extract-info
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+                    # Extract session ID (everything after last hyphen)
+                    SESSION_ID="${BRANCH_NAME##*-}"
+                    echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
+
+                    # Create PR title from branch name
+                    PR_TITLE="[Claude AI] ${BRANCH_NAME#claude/}"
+                    echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+
+            -   name: Create Pull Request
+                if: steps.check-pr.outputs.pr_exists == '0'
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+                    PR_TITLE="${{ steps.extract-info.outputs.pr_title }}"
+                    SESSION_ID="${{ steps.extract-info.outputs.session_id }}"
+
+                    # Get commit messages for PR body
+                    COMMITS=$(git log origin/main..HEAD --pretty=format:"- %s (%h)" | head -10)
+
+                    # Create PR body
+                    PR_BODY=$(cat << EOF
+                    ## 🤖 Automatyczny PR z Claude AI
+
+                    **Branch:** \`$BRANCH_NAME\`
+                    **Session ID:** \`$SESSION_ID\`
+                    **Autor:** @${{ github.actor }}
+
+                    ### Ostatnie commity:
+                    $COMMITS
+
+                    ---
+
+                    Ten kod został wygenerowany przy pomocy asystenta Claude AI.
+                    Proszę o weryfikację przed merge'em.
+
+                    > ⚠️ **Uwaga:** Sprawdź testy, linting i type checking przed zaakceptowaniem zmian.
+                    EOF
+                    )
+
+                    # Create the PR
+                    gh pr create \
+                      --title "$PR_TITLE" \
+                      --body "$PR_BODY" \
+                      --base main \
+                      --head "$BRANCH_NAME" \
+                      --label "ai-generated" \
+                      --label "automated-pr" \
+                      --label "claude-code"
+
+            -   name: PR Summary
+                if: always()
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+
+                    if [ "${{ steps.check-pr.outputs.pr_exists }}" -gt 0 ]; then
+                      echo "::notice::PR #${{ steps.check-pr.outputs.pr_number }} already exists for branch $BRANCH_NAME"
+                    else
+                      echo "::notice::New PR created for branch $BRANCH_NAME"
+                    fi
