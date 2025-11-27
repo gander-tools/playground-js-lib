@@ -1,9 +1,13 @@
 {
     "name": "@gander-tools/playground",
-    "version": "0.10.3",
+    "version": "0.10.4",
     "license": "MIT",
     "exports": "./src/index.ts",
     "publish": {
-        "include": ["LICENSE", "README.md", "src/**/*.ts"]
+        "include": [
+            "LICENSE",
+            "README.md",
+            "src/**/*.ts"
+        ]
     }
 }

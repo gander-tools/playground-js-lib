@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.4](https://github.com/gander-tools/playground-js-lib/compare/v0.10.3...v0.10.4) (2025-11-27)
+
+
+### Documentation
+
+* add merge commit configuration guide for release please ([927e7e2](https://github.com/gander-tools/playground-js-lib/commit/927e7e206687030c66ddeb03a8cf816e4f6c8d3b))
+* add merge commit configuration guide for release please ([#103](https://github.com/gander-tools/playground-js-lib/issues/103)) ([a23cda4](https://github.com/gander-tools/playground-js-lib/commit/a23cda4cfb1d0dd0d4a31f7db37fbe150a2644b4))
+
 ## [0.10.3](https://github.com/gander-tools/playground-js-lib/compare/v0.10.2...v0.10.3) (2025-11-27)
 
 
