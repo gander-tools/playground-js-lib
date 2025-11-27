@@ -59,7 +59,7 @@ jobs:
                     SESSION_ID="${{ steps.extract-info.outputs.session_id }}"
 
                     # Get commit messages for PR body
-                    COMMITS=$(git log origin/main..HEAD --pretty=format:"- %s (%h)" | head -10)
+                    COMMITS=$(git log origin/master..HEAD --pretty=format:"- %s (%h)" | head -10)
 
                     # Create PR body
                     PR_BODY=$(cat << EOF
@@ -85,7 +85,7 @@ jobs:
                     gh pr create \
                       --title "$PR_TITLE" \
                       --body "$PR_BODY" \
-                      --base main \
+                      --base master \
                       --head "$BRANCH_NAME" \
                       --label "ai-generated" \
                       --label "automated-pr" \
