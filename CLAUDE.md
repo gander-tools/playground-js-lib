@@ -112,6 +112,8 @@ Lefthook is configured to run pre-commit checks. Hooks may include linting, form
 
 This project uses **Release Please** for fully automated release management via GitHub Actions.
 
+📖 **For maintainers**: See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed workflow instructions, troubleshooting, and practical examples.
+
 ### How It Works
 
 1. **Automatic PR Creation**: When you merge commits to `main`, Release Please automatically:
@@ -174,6 +176,7 @@ This project uses **controlled versioning** to prevent aggressive version bumps:
 - `.github/workflows/release-please.yml` - GitHub Actions workflow
 - `release-please-config.json` - Release Please configuration
 - `.release-please-manifest.json` - Current version tracking
+- `RELEASE_PLEASE_MAINTAINER_GUIDE.md` - Maintainer workflow guide
 
 ### Advanced Release Please Control
 
@@ -290,6 +293,7 @@ The old `bun run release` command (using release-it) is still available but depr
 - To bump minor/major version, manually edit `.release-please-manifest.json`
 - **After changing Release Please config**: Close existing Release PR, remove `autorelease: pending` label, push new commit
 - Set `draft-pull-request: true` in config if you want PRs as drafts to prevent accidental merges
+- **For detailed Release Please workflows**: Refer to `RELEASE_PLEASE_MAINTAINER_GUIDE.md`
 - Maintain compatibility with Node 20+ and Node 22+
 - Keep both CJS and ESM exports working
 - Update tests when adding new functionality
