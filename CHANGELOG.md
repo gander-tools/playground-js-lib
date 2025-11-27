@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.5](https://github.com/gander-tools/playground-js-lib/compare/v0.10.4...v0.10.5) (2025-11-27)
+
+
+### Documentation
+
+* add first-time publish limitation for trusted publishers ([fa8a1be](https://github.com/gander-tools/playground-js-lib/commit/fa8a1be9a9770333cd5cba55ebc56ef9f88ed75a))
+* add npm trusted publishers configuration to CLAUDE.md ([34bddd4](https://github.com/gander-tools/playground-js-lib/commit/34bddd474d33c3bbe85034aa03affb04a31e1403))
+* add npm trusted publishers configuration to CLAUDE.md ([#107](https://github.com/gander-tools/playground-js-lib/issues/107)) ([70b0908](https://github.com/gander-tools/playground-js-lib/commit/70b09086203a4c374efb4f3a8bde45a7a1a4aa6e))
+* fix trusted publisher troubleshooting info in claude.md ([26d2571](https://github.com/gander-tools/playground-js-lib/commit/26d2571c3eb24138fc70633f28676e8b8eae68d6))
+
 ## [0.10.4](https://github.com/gander-tools/playground-js-lib/compare/v0.10.3...v0.10.4) (2025-11-27)
 
 
