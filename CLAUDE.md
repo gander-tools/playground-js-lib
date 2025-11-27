@@ -227,6 +227,12 @@ Configure `master` branch to require passing `Test & Build` check before merging
 - No secrets needed in GitHub repository settings
 - Publishes only from `master` branch via `release-please.yml` workflow
 
+**⚠️ First-time publish limitation:**
+- **Trusted publishers cannot CREATE new packages** - they can only update existing ones
+- **First publish must be manual:** Run `npm login` then `npm publish --access public` locally
+- After first manual publish, all subsequent releases work automatically through Actions
+- This is npm's security measure to prevent unauthorized package creation
+
 ## Release Process (Release Please)
 
 **Fully automated** via GitHub Actions. See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed instructions.
