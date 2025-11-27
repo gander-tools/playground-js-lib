@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/gander-tools/playground-js-lib/compare/v0.10.1...v0.10.2) (2025-11-27)
+
+
+### Features
+
+* add claude code hooks configuration ([#97](https://github.com/gander-tools/playground-js-lib/issues/97)) ([e4303d9](https://github.com/gander-tools/playground-js-lib/commit/e4303d940352bb0203097410d4a9176a9421f600))
+
 ## [0.10.1](https://github.com/gander-tools/playground-js-lib/compare/v0.10.0...v0.10.1) (2025-11-27)
 
 
