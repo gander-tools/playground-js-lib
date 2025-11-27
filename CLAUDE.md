@@ -82,6 +82,23 @@ Conventional Commits enable:
 
 **Configuration**: `bump-minor-pre-major` + `bump-patch-for-minor-pre-major` in `release-please-config.json`
 
+### ⚠️ GitHub Merge Commit Configuration Required
+
+**Issue:** GitHub's default merge commit format (`Merge pull request #102 from...`) does not follow Conventional Commits, causing Release Please parsing errors.
+
+**Solution:** Configure GitHub repository settings to include PR titles in merge commits:
+
+1. Go to **Settings** → **General** → **Pull Requests**
+2. Under "Allow merge commits", set default to **"pull request title"**
+3. This changes merge commits from `Merge pull request #102...` to `feat: description (#102)`
+
+**Alternative:** Use "Squash and merge" strategy (recommended for most PRs):
+- Eliminates merge commits entirely
+- PR title becomes the commit message (already validated)
+- Cleaner git history
+
+**See:** [`.github/MERGE_COMMIT_SETUP.md`](.github/MERGE_COMMIT_SETUP.md) for detailed setup instructions.
+
 ## Tech Stack & Tools
 
 - **Language**: TypeScript 5.7, Node ^20 || >=22

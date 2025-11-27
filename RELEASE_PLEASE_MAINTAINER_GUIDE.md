@@ -257,6 +257,56 @@ git commit -m "feat!: redesign authentication API"
 
 ---
 
+### Problem: Release Please Logs Show Merge Commit Parsing Errors
+
+**Symptoms**:
+- GitHub Actions logs show errors like: `commit could not be parsed: Merge pull request #102...`
+- Error message: `Error: unexpected token ' ' at 1:6`
+- Release PRs may not be created despite having valid commits
+
+**Root Cause**:
+GitHub's default merge commit format (`Merge pull request #102 from branch...`) doesn't follow Conventional Commits format.
+
+**Impact**:
+- Release Please can't parse merge commits
+- May prevent release PR creation or cause incorrect changelog generation
+- Noisy error logs
+
+**Solution**:
+Configure GitHub repository merge commit settings:
+
+1. **Go to Repository Settings**:
+   - Navigate to **Settings** → **General** → **Pull Requests** section
+
+2. **Choose a Merge Strategy**:
+
+   **Option A: Configure Merge Commit Format (Recommended)**
+   - Under "Allow merge commits", set default commit message to **"pull request title"**
+   - This changes merge commits from `Merge pull request #102...` to `feat: description (#102)`
+   - Merge commits now parseable by Release Please
+
+   **Option B: Use Squash Merging (Best for Most PRs)**
+   - Enable **"Allow squash merging"** and disable merge commits
+   - PR title becomes the commit message (already validated by semantic-pr.yml)
+   - Cleaner git history, no merge commit parsing issues
+
+   **Option C: Use Rebase Merging**
+   - Enable **"Allow rebase merging"** and disable merge commits
+   - Preserves individual commits without merge commits
+   - All commits must follow Conventional Commits (enforced by commitlint)
+
+**Verification**:
+After applying the fix, check Release Please logs:
+```
+✔ Collecting release commit SHAs
+✔ Building candidate release pull request
+✔ Created/updated release PR
+```
+
+**See Also**: [`.github/MERGE_COMMIT_SETUP.md`](.github/MERGE_COMMIT_SETUP.md) for detailed setup instructions.
+
+---
+
 ### Problem: Release PR Has Wrong Version
 
 **Example**: Suggests `1.0.0` instead of `0.9.0`

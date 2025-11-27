@@ -13,6 +13,7 @@ bun run test
 
 - **[CLAUDE.md](./CLAUDE.md)** - Project overview, tech stack, and development workflow
 - **[RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md)** - Release management workflow for maintainers
+- **[.github/MERGE_COMMIT_SETUP.md](.github/MERGE_COMMIT_SETUP.md)** - Fix Release Please merge commit parsing errors
 
 ## For Maintainers
 
@@ -21,3 +22,5 @@ This project uses Release Please for automated releases. See the [Maintainer Gui
 - How to manage Release PRs
 - Version control strategies
 - Troubleshooting common issues
+
+**⚠️ Important Setup:** Configure GitHub merge settings to avoid Release Please parsing errors. See [MERGE_COMMIT_SETUP.md](.github/MERGE_COMMIT_SETUP.md).
