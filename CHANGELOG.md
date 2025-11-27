@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.10.7](https://github.com/gander-tools/playground-js-lib/compare/v0.10.6...v0.10.7) (2025-11-27)
+
+
+### Features
+
+* add auto-format workflow for release please prs ([be1a07f](https://github.com/gander-tools/playground-js-lib/commit/be1a07fa6349c2981fa2d8d8ff55e01cdb6dcd30))
+* add auto-format workflow for release please prs ([#121](https://github.com/gander-tools/playground-js-lib/issues/121)) ([75a696f](https://github.com/gander-tools/playground-js-lib/commit/75a696fd34658a6aea5581d5ade277cbb1d4ac86))
+
+
+### Bug Fixes
+
+* correct yaml syntax in format-release-pr workflow ([434acb6](https://github.com/gander-tools/playground-js-lib/commit/434acb6f438cf1b10fece53216562a9fe11fca13))
+* exclude release please prs from automerge workflow ([ad67252](https://github.com/gander-tools/playground-js-lib/commit/ad67252c468e035830a4cb7d82bdf008dd11834f))
+* exclude release please prs from automerge workflow ([#120](https://github.com/gander-tools/playground-js-lib/issues/120)) ([f33d0de](https://github.com/gander-tools/playground-js-lib/commit/f33d0decda5291c8f73073a4b17f8bce239ced38))
+
+
+### Documentation
+
+* add github actions implementation notes and semantic-release incompatibility explanation ([9881034](https://github.com/gander-tools/playground-js-lib/commit/9881034a5c876076cd3dcbbba99abf1aa01da32d))
+
 ## [0.10.6](https://github.com/gander-tools/playground-js-lib/compare/v0.10.5...v0.10.6) (2025-11-27)
 
 
