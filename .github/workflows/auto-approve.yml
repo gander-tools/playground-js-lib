@@ -1,0 +1,23 @@
+name: Auto Approve
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, reopened]
+
+permissions:
+    contents: read
+    pull-requests: write
+
+jobs:
+    auto-approve:
+        name: Auto approve PRs
+        runs-on: ubuntu-latest
+        # Only auto-approve PRs from dependabot or with auto-approve label
+        if: |
+            github.actor == 'dependabot[bot]' ||
+            contains(github.event.pull_request.labels.*.name, 'auto-approve')
+        steps:
+            -   name: Auto approve
+                uses: hmarr/auto-approve-action@f0939ea97e9205ef24d872e76833fa908a770363 # v4.0.0
+                with:
+                    github-token: ${{ secrets.GITHUB_TOKEN }}
