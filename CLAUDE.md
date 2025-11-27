@@ -183,12 +183,12 @@ Configured in `.claude/settings.json` for automated development environment:
 **Version Pinning (Required):**
 All actions MUST use SHA-pinned versions for security:
 ```yaml
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+- uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 ```
 
 **Standard Actions:**
-- `actions/checkout`: `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2)
-- `actions/setup-node`: `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` (v4.1.0)
+- `actions/checkout`: `34e114876b0b11c390a56381ad16ebd13914f8d5` (v4.3.1)
+- `actions/setup-node`: `49933ea5288caeca8642d1e84afbd3f7d6820020` (v4.4.0)
 - `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
 - `amannn/action-semantic-pull-request`: `0723387faaf9b38adef4775cd42cfd5155ed6017` (v5.5.3)
 
