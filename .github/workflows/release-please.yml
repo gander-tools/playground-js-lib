@@ -1,0 +1,107 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+          package-name: "@gander-tools/playground"
+
+  # Ten job wykona się TYLKO po zmerge'owaniu Release PR
+  publish-to-npm:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun run test:run
+
+      - name: Type check
+        run: bun run typecheck
+
+      - name: Lint and format check
+        run: bun run check
+
+      - name: Build package
+        run: bun run prepack
+
+      - name: Validate package
+        run: bun run publint
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Log release info
+        run: |
+          echo "✅ Successfully published version ${{ needs.release-please.outputs.version }}"
+          echo "📦 Package: @gander-tools/playground@${{ needs.release-please.outputs.version }}"
+          echo "🏷️  Tag: ${{ needs.release-please.outputs.tag_name }}"
+
+  # Publikacja do JSR po pomyślnej publikacji do npm
+  publish-to-jsr:
+    needs: [release-please, publish-to-npm]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: deno install --no-lock --allow-scripts
+
+      - name: Publish to JSR
+        run: deno publish
+
+      - name: Log JSR release info
+        run: |
+          echo "✅ Successfully published to JSR"
+          echo "📦 Version: ${{ needs.release-please.outputs.version }}"
