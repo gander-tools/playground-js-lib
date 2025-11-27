@@ -195,6 +195,44 @@ All actions MUST use SHA-pinned versions for security:
 **Branch Protection (Recommended):**
 Configure `master` branch to require passing `Test & Build` check before merging. This prevents Release Please PRs with failing tests/linting from being merged and blocking releases.
 
+## NPM Publishing (Trusted Publishers)
+
+**⚠️ IMPORTANT:** This project uses **npm Trusted Publishers** (OIDC-based authentication), **NOT token-based authentication**.
+
+**What this means:**
+- **NO `NPM_TOKEN` secret required** - npm trusts GitHub Actions directly via OIDC
+- Workflow uses `id-token: write` permission to authenticate with npm
+- More secure than token-based auth (no long-lived secrets, automatic rotation)
+
+**Configuration:**
+1. **On npmjs.com:** Configure trusted publisher for `@gander-tools/playground`:
+   - Package Settings → Publishing Access → Trusted Publishers
+   - Add: `gander-tools/playground-js-lib` repository, workflow `release-please.yml`
+
+2. **In workflow:** Already configured correctly:
+   ```yaml
+   permissions:
+     id-token: write  # Required for OIDC auth with npm
+
+   - uses: actions/setup-node@sha
+     with:
+       registry-url: "https://registry.npmjs.org"
+
+   - run: npm publish --provenance --access public
+   ```
+
+**Key points:**
+- `--provenance` flag is **required** for trusted publishers (generates attestation)
+- Workflow must have `id-token: write` permission
+- No secrets needed in GitHub repository settings
+- Publishes only from `master` branch via `release-please.yml` workflow
+
+**⚠️ Common Trusted Publisher issues:**
+- **Workflow filename must match EXACTLY** - npm checks `.github/workflows/release-please.yml` path
+- **Repository owner/name must match** - verify `gander-tools/playground-js-lib` on npmjs.com
+- **Environment name** - if set in trusted publisher config, must match workflow's `environment:` setting
+- **Branch restrictions** - if configured, publish only works from specified branches
+
 ## Release Process (Release Please)
 
 **Fully automated** via GitHub Actions. See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed instructions.
