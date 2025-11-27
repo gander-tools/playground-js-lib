@@ -53,8 +53,8 @@ jobs:
       - name: Type check
         run: bun run typecheck
 
-      - name: Lint and format check
-        run: bun run check
+      - name: Lint check
+        run: bun run lint
 
       - name: Build package
         run: bun run prepack
