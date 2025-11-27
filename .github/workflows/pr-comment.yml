@@ -1,0 +1,53 @@
+name: PR Comment
+
+on:
+    pull_request:
+        types: [opened, synchronize]
+
+permissions:
+    contents: read
+    pull-requests: write
+
+jobs:
+    comment:
+        name: Add PR comment
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+            -   name: Setup Node.js
+                uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+                with:
+                    node-version: "22"
+
+            -   name: Install dependencies
+                run: npm install
+
+            -   name: Run tests with coverage
+                run: npm run test:coverage
+                continue-on-error: true
+
+            -   name: Generate coverage report
+                id: coverage
+                run: |
+                    # Extract coverage summary from vitest output
+                    COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null || echo '{"total":{"lines":{"pct":0},"statements":{"pct":0},"functions":{"pct":0},"branches":{"pct":0}}}')
+                    echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+
+            -   name: Comment PR with coverage
+                uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+                with:
+                    issue-number: ${{ github.event.pull_request.number }}
+                    body: |
+                        ## 📊 Test Coverage Report
+
+                        **PR:** #${{ github.event.pull_request.number }}
+                        **Commit:** ${{ github.event.pull_request.head.sha }}
+
+                        ### Coverage Summary
+                        Coverage data will be displayed here after test execution.
+
+                        ---
+                        *This comment is automatically updated by the PR Comment workflow.*
+                    edit-mode: replace
