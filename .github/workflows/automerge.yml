@@ -1,0 +1,38 @@
+name: Automerge
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, reopened, labeled, unlabeled]
+    pull_request_review:
+        types: [submitted]
+    check_suite:
+        types: [completed]
+    status: {}
+
+permissions:
+    contents: write
+    pull-requests: write
+    checks: read
+
+jobs:
+    automerge:
+        name: Automerge
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Automerge PR
+                uses: pascalgn/automerge-action@7961b8b5eec56cc088c140b56d864285eabd3f67 # v0.16.4
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    # Only merge PRs with 'automerge' label
+                    MERGE_LABELS: automerge
+                    # Require these labels to be absent
+                    MERGE_REMOVE_LABELS: wip,do-not-merge
+                    # Merge method: merge, squash, or rebase
+                    MERGE_METHOD: squash
+                    # Wait for required checks to pass
+                    MERGE_REQUIRED_APPROVALS: 0
+                    # Delete branch after merge
+                    MERGE_DELETE_BRANCH: true
+                    # Update PR when base branch changes
+                    UPDATE_LABELS: automerge
+                    UPDATE_METHOD: rebase

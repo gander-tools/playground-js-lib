@@ -1,0 +1,79 @@
+# Labeler Configuration
+# This config is used by srvaroa/labeler action
+# Docs: https://github.com/srvaroa/labeler
+
+# Documentation changes
+documentation:
+    branch: "^docs?/"
+    title: "^docs?:"
+    files:
+        - "**/*.md"
+        - ".github/**/*.md"
+
+# Dependencies updates
+dependencies:
+    title: "^(build|chore)\\(deps"
+    files:
+        - "package.json"
+        - "package-lock.json"
+
+# CI/CD changes
+ci/cd:
+    branch: "^ci/"
+    title: "^ci:"
+    files:
+        - ".github/workflows/**"
+        - ".github/**/*.yml"
+        - ".github/**/*.yaml"
+
+# Source code changes
+source:
+    files:
+        - "src/**/*.ts"
+        - "src/**/*.js"
+
+# Test changes
+tests:
+    branch: "^test/"
+    title: "^test:"
+    files:
+        - "test/**"
+        - "**/*.test.ts"
+        - "**/*.test.js"
+        - "**/*.spec.ts"
+        - "**/*.spec.js"
+
+# Configuration changes
+config:
+    files:
+        - "biome.json"
+        - "tsconfig.json"
+        - "commitlint.config.js"
+        - "lefthook.yml"
+        - ".editorconfig"
+        - ".gitignore"
+        - ".gitattributes"
+
+# Release and versioning
+release:
+    title: "^chore\\(master\\): release"
+    files:
+        - ".release-please-manifest.json"
+        - "release-please-config.json"
+
+# Bug fixes
+bug:
+    title: "^fix:"
+    labels:
+        - "bug"
+
+# New features
+feature:
+    title: "^feat:"
+    labels:
+        - "enhancement"
+
+# Breaking changes
+breaking:
+    title: "^(feat|fix)!:"
+    body: "BREAKING CHANGE"

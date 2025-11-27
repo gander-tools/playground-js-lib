@@ -1,0 +1,51 @@
+name: Mark Stale Issues and PRs
+
+on:
+    schedule:
+        # Run daily at 00:00 UTC
+        -   cron: "0 0 * * *"
+    workflow_dispatch: # Allow manual trigger
+
+permissions:
+    contents: read
+    issues: write
+    pull-requests: write
+
+jobs:
+    stale:
+        name: Mark stale issues and PRs
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Mark stale
+                uses: actions/stale@5f858e3efba33a5ca4407a664cc011ad407f2008 # v10.1.0
+                with:
+                    # Issues config
+                    stale-issue-message: |
+                        This issue has been automatically marked as stale because it has not had
+                        recent activity. It will be closed in 7 days if no further activity occurs.
+                        Thank you for your contributions.
+                    close-issue-message: |
+                        This issue has been automatically closed because it has not had recent activity.
+                        Please feel free to reopen if you would like to continue working on it.
+                    days-before-issue-stale: 90
+                    days-before-issue-close: 7
+                    stale-issue-label: "stale"
+                    exempt-issue-labels: "pinned,security,bug"
+
+                    # PRs config
+                    stale-pr-message: |
+                        This pull request has been automatically marked as stale because it has not had
+                        recent activity. It will be closed in 7 days if no further activity occurs.
+                        Please update the PR to keep it active.
+                    close-pr-message: |
+                        This pull request has been automatically closed because it has not had recent activity.
+                        Please feel free to reopen if you would like to continue working on it.
+                    days-before-pr-stale: 60
+                    days-before-pr-close: 7
+                    stale-pr-label: "stale"
+                    exempt-pr-labels: "pinned,security,wip"
+
+                    # General config
+                    operations-per-run: 100
+                    remove-stale-when-updated: true
+                    ascending: false # Process newest first
