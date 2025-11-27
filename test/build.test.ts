@@ -17,7 +17,7 @@ describe("package build", () => {
 
     beforeAll(async () => {
         // Run the build process
-        await execAsync("bun run prepack", {
+        await execAsync("npm run prepack", {
             cwd: resolve(__dirname, ".."),
         });
     }, 60000); // 60 second timeout for build
@@ -37,14 +37,18 @@ describe("package build", () => {
 
     describe("package validation", () => {
         it("should pass publint validation", async () => {
-            const { stdout, stderr } = await execAsync("bun run publint", {
-                cwd: resolve(__dirname, ".."),
-            });
+            const { stdout, stderr } = await execAsync(
+                "npx publint --pack auto",
+                {
+                    cwd: resolve(__dirname, ".."),
+                },
+            );
 
             // publint exits with 0 if validation passes
-            // Check output doesn't contain errors
-            expect(stderr).toBe("");
-            expect(stdout).not.toContain("error");
+            // Check output doesn't contain errors or warnings
+            const output = stdout + stderr;
+            expect(output).toContain("All good!");
+            expect(output).not.toContain("Error");
         }, 30000); // 30 second timeout for publint
     });
 
