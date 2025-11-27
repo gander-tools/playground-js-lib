@@ -1,9 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "draft-pull-request": false,
     "packages": {
         ".": {
             "release-type": "node",
             "package-name": "@gander-tools/playground",
+            "bump-minor-pre-major": true,
+            "bump-patch-for-minor-pre-major": true,
             "changelog-sections": [
                 {
                     "type": "feat",
