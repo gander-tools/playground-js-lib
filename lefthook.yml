@@ -4,3 +4,8 @@
  pre-commit:
    jobs:
      - run: bun run check
+
+ commit-msg:
+   commands:
+     commitlint:
+       run: npx commitlint --edit {1}
