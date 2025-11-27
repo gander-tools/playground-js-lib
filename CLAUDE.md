@@ -2,502 +2,239 @@
 
 ## Project Overview
 
-This is a playground project designed for testing and experimenting with multi-system module configurations, linters, tests, and publication workflows across different package registries (npm, JSR). It serves as a learning environment for package development best practices.
+Playground project for testing TypeScript library development with automated releases to npm/JSR. Learning environment for package development best practices with multi-system module support.
 
-## Tech Stack
+**Core functionality**: Simple utility functions (`add`, `addRef` with Vue Reactivity)
 
-- **Language**: TypeScript 5.7
-- **Build Tool**: pkgroll (Rollup-based)
+## ⚠️ CONVENTIONAL COMMITS - REQUIRED
+
+This repository **strictly enforces** [Conventional Commits](https://www.conventionalcommits.org/) format. **All commits and PR titles MUST follow this format or they will be rejected.**
+
+### Why This Matters
+
+Conventional Commits enable:
+- **Automated releases** via Release Please (analyzes commits → determines version → publishes)
+- **Automatic changelog generation** organized by commit type
+- **Semantic versioning control** (different commit types = different version bumps)
+- **Clear project history** for reviews and maintenance
+
+### Allowed Commit Types
+
+- `feat:` - New feature (→ **patch bump** in pre-1.0, e.g., 0.8.0 → 0.8.1)
+- `fix:` - Bug fix (→ **patch bump**)
+- `feat!:` or `BREAKING CHANGE:` - Breaking change (→ **minor bump** in pre-1.0, e.g., 0.8.0 → 0.9.0)
+- `docs:` - Documentation only
+- `style:` - Code style/formatting (no logic changes)
+- `refactor:` - Code refactoring
+- `perf:` - Performance improvements
+- `test:` - Test changes
+- `build:` - Build system/dependencies
+- `ci:` - CI configuration
+- `chore:` - Other changes (no src/test)
+- `revert:` - Revert previous commit
+
+### Format Rules
+
+**Structure**: `type: description` (lowercase type, colon + space, lowercase description)
+
+**Valid Examples:**
+```bash
+✅ feat: add calculation caching
+✅ fix: resolve memory leak in cache
+✅ feat!: redesign public API (breaking)
+✅ docs: update installation guide
+✅ chore: upgrade dependencies
+```
+
+**Invalid Examples:**
+```bash
+❌ Added new feature          # missing type
+❌ feat Add feature           # missing colon
+❌ FEAT: add feature          # uppercase type
+❌ feat:add feature           # missing space after colon
+❌ feat: Add feature          # uppercase description
+```
+
+### Multi-Layer Enforcement
+
+**1. Local (Lefthook + commitlint)**
+- Validates commit messages immediately on `git commit`
+- Invalid commits are rejected before they're created
+- Config: `commitlint.config.js`, `lefthook.yml`
+
+**2. Remote (GitHub Actions)**
+- `.github/workflows/commitlint.yml` - Validates ALL commit messages in PRs (**required check**)
+- `.github/workflows/semantic-pr.yml` - Validates PR titles (**required check**)
+- PRs cannot merge if validation fails
+
+**3. Cannot Be Bypassed**
+- Local: `git commit --no-verify` skips local hooks, but...
+- Remote: GitHub Actions will still reject on push
+- Fix locally: `git commit --amend -m "feat: correct message"`
+
+### Version Bump Strategy
+
+**Pre-1.0 (current):**
+- `feat:` → patch (0.10.2 → 0.10.3)
+- `fix:` → patch (0.10.2 → 0.10.3)
+- `feat!:` → minor (0.10.2 → 0.11.0)
+- Major (1.0.0) requires manual edit of `.release-please-manifest.json`
+
+**Configuration**: `bump-minor-pre-major` + `bump-patch-for-minor-pre-major` in `release-please-config.json`
+
+## Tech Stack & Tools
+
+- **Language**: TypeScript 5.7, Node ^20 || >=22
+- **Build**: pkgroll (Rollup-based) → CJS/ESM dual exports
 - **Testing**: Vitest with coverage
-- **Linting/Formatting**: Biome 1.9
-- **Git Hooks**: Lefthook
-- **Release Management**: Release Please (automated via GitHub Actions)
-- **Node Version**: ^20 || >=22
-- **Optional Dependencies**: Vue 3 Reactivity API
+- **Linting**: Biome 1.9 (lint + format)
+- **Git Hooks**: Lefthook (pre-commit + commit-msg)
+- **Releases**: Release Please (GitHub Actions)
+- **Optional**: Vue 3 Reactivity API
+
+## Available Scripts
+
+**Development:**
+- `npm run check` / `check:fix` - Biome lint + format
+- `npm run typecheck` - TypeScript validation
+- `npm run lint` / `lint:fix` - Linting only
+- `npm run format` / `format:fix` - Formatting only
+
+**Testing:**
+- `npm test` - Watch mode
+- `npm run test:run` - Run once
+- `npm run test:coverage` - With coverage
+
+**Build:**
+- `npm run prepack` - Build CJS/ESM to dist/
+- `npm run publint` - Validate package
+
+## Development Workflow
+
+1. Edit files in `src/`
+2. Run `npm run check:fix` (auto-fix style issues)
+3. Run `npm run typecheck` (verify types)
+4. Run `npm run test:run` (verify tests pass)
+5. **Commit with Conventional Commits format** (e.g., `feat: add feature`)
+6. Push to branch → GitHub validates commits
+7. Merge to `main` → Release Please creates release PR
+8. Merge release PR → Auto-publish to npm/JSR
 
 ## Project Structure
 
 ```
 .
-├── src/
-│   └── index.ts          # Main exports (add, addRef functions)
-├── test/                 # Vitest test files
-├── dist/                 # Build output (CommonJS & ESM)
-├── package.json          # Package configuration
-├── tsconfig.json         # TypeScript configuration
-├── biome.json           # Biome linter/formatter config
-├── cliff.toml           # git-cliff changelog config
-└── lefthook.yml         # Git hooks configuration
+├── src/index.ts              # Main exports
+├── test/                     # Vitest tests
+├── dist/                     # Build output (CJS/ESM)
+├── commitlint.config.js      # Commit validation rules
+├── lefthook.yml              # Git hooks (pre-commit + commit-msg)
+├── biome.json                # Linter/formatter config
+├── release-please-config.json # Release automation config
+└── .release-please-manifest.json # Version tracking
 ```
 
-## Core Functionality
+## Git Hooks (Lefthook)
 
-The library provides simple utility functions:
-- `add(a, b)` - Basic number addition
-- `addRef(a, b)` - Reactive addition using Vue's Ref system
+**Configured hooks** (auto-installed with `npm install`):
+1. **`pre-commit`** - Runs `npm run check` (Biome lint + format)
+2. **`commit-msg`** - Runs `commitlint` (validates Conventional Commits format)
 
-## Available Scripts
-
-### Development
-- `bun run check` - Run Biome checks (lint + format)
-- `bun run check:fix` - Auto-fix Biome issues
-- `bun run format` - Check formatting
-- `bun run format:fix` - Auto-fix formatting
-- `bun run lint` - Run linting
-- `bun run lint:fix` - Auto-fix lint issues
-- `bun run typecheck` - Run TypeScript type checking
-
-### Testing
-- `bun run test` - Run tests in watch mode
-- `bun run test:run` - Run tests once
-- `bun run test:watch` - Run tests in watch mode
-- `bun run test:coverage` - Run tests with coverage report
-
-### Build & Release
-- `bun run prepack` - Build package (generates CJS/ESM/types in dist/)
-- `bun run publint` - Validate package for publication
-- `bun run release` - Manual release with release-it (legacy, use Release Please instead)
-
-## Development Workflow
-
-1. **Making Changes**: Edit files in `src/`
-2. **Code Quality**: Run `bun run check:fix` before committing
-3. **Testing**: Ensure tests pass with `bun run test:run`
-4. **Type Safety**: Verify with `bun run typecheck`
-5. **Building**: Test build with `bun run prepack`
-6. **Committing**: Use Conventional Commits format (e.g., `feat:`, `fix:`)
-7. **Releasing**: Automated via Release Please when merging to `main`
-
-## Module System
-
-The package supports both CommonJS and ESM:
-- **CJS**: `dist/index.cjs` with `dist/index.d.cts`
-- **ESM**: `dist/index.mjs` with `dist/index.d.mts`
-
-## Conventional Commits Enforcement
-
-This repository **enforces** [Conventional Commits](https://www.conventionalcommits.org/) format through multiple layers:
-
-### Local Enforcement (Lefthook + commitlint)
-
-**Commit messages are automatically validated** when you commit locally. Invalid commits will be rejected immediately.
-
-**Configuration files:**
-- `commitlint.config.js` - Defines allowed commit types and rules
-- `lefthook.yml` - Git hooks configuration
-
-**Allowed commit types:**
-- `feat:` - New feature (→ patch bump in pre-1.0)
-- `fix:` - Bug fix (→ patch bump)
-- `docs:` - Documentation changes
-- `style:` - Code style/formatting (no logic changes)
-- `refactor:` - Code refactoring
-- `perf:` - Performance improvements
-- `test:` - Adding or updating tests
-- `build:` - Build system or dependencies
-- `ci:` - CI configuration changes
-- `chore:` - Other changes (no src/test changes)
-- `revert:` - Revert a previous commit
-
-**Breaking changes:** Add `!` after type (e.g., `feat!:`) or include `BREAKING CHANGE:` in commit body.
-
-**Examples:**
-```bash
-✅ feat: add new calculation method
-✅ fix: resolve memory leak in cache
-✅ feat!: redesign public API (breaking change)
-✅ docs: update installation instructions
-❌ Added new feature (missing type)
-❌ feat Add feature (missing colon)
-❌ FEAT: add feature (uppercase type)
-```
-
-### Remote Enforcement (GitHub Actions)
-
-**Two GitHub Actions workflows enforce commit quality:**
-
-1. **`.github/workflows/commitlint.yml`** - Validates all commit messages in PRs
-   - Runs on every PR and push to `master`
-   - **Required check** - PRs cannot be merged if commits are invalid
-   - Validates commit format against `commitlint.config.js`
-
-2. **`.github/workflows/semantic-pr.yml`** - Validates PR title format
-   - Runs when PR is opened, edited, or synchronized
-   - **Required check** - PR title must follow Conventional Commits
-   - Ensures Release Please can generate proper changelogs
-
-**⚠️ Important:** Both checks are **required** and will block merging if validation fails.
-
-### Bypassing Local Hooks (Not Recommended)
-
-While you can skip local hooks with `git commit --no-verify`, **GitHub Actions will still reject invalid commits** when you push. It's better to fix the commit message locally.
-
-**To amend a commit message:**
-```bash
-git commit --amend -m "feat: correct commit message"
-```
-
-## Git Hooks
-
-Lefthook is configured with two hooks:
-
-1. **`pre-commit`** - Runs `bun run check` (Biome linter/formatter)
-2. **`commit-msg`** - Runs `commitlint` to validate commit message format
-
-Install hooks after cloning:
-```bash
-npm install  # or bun install
-npx lefthook install
-```
+**Manual install**: `npx lefthook install`
 
 ## Claude Code Hooks
 
-This repository includes Claude Code hooks for automated development environment setup and code quality checks.
+Configured in `.claude/settings.json` for automated development environment:
 
-### Configured Hooks
+**SessionStart Hook:**
+- Runs `npm install` on session start (timeout: 300s)
 
-Hooks are configured in `.claude/settings.json`:
+**PostToolUse Hook:**
+- Runs `npm run check` after Write/Edit operations (timeout: 120s)
+- Provides immediate code quality feedback
 
-**SessionStart Hook**:
-- Runs: `npm install`
-- Automatically installs dependencies when Claude Code session starts
-- Timeout: 300 seconds (5 minutes)
-
-**PostToolUse Hook**:
-- Runs: `npm run check` (Biome linting + formatting)
-- Triggered after Write/Edit operations
-- Provides immediate feedback on code quality issues
-- Timeout: 120 seconds (2 minutes)
-
-### Configuration Example
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm install",
-            "timeout": 300
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
-            "timeout": 120
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Local Customization
-
-Create `.claude/settings.local.json` for local hook overrides (not version-controlled):
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Custom validation here'",
-            "timeout": 30
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Benefits
-
-- **Automatic setup**: Dependencies installed automatically on session start
-- **Code quality**: Instant feedback on style issues after editing
-- **Simple configuration**: Inline commands in JSON, no separate scripts needed
-- **Consistency**: Same development environment for all contributors using Claude Code
+**Local customization**: Create `.claude/settings.local.json` for overrides (not version-controlled)
 
 ## GitHub Actions
 
-### Version Pinning Requirement
+**Workflows:**
+- `ci.yml` - Tests, typecheck, lint, build validation (runs on all PRs)
+- `release-please.yml` - Automated releases
+- `commitlint.yml` - Validates commit messages (**required check**)
+- `semantic-pr.yml` - Validates PR titles (**required check**)
 
-**IMPORTANT**: All GitHub Actions workflows in this repository **MUST** use SHA-pinned action versions for security and reproducibility. This is a repository configuration requirement.
-
-**Example of correct version pinning:**
+**Version Pinning (Required):**
+All actions MUST use SHA-pinned versions for security:
 ```yaml
 - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-- uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
 ```
 
-**Why version pinning is required:**
-- **Security**: Prevents malicious code injection through compromised action versions
-- **Reproducibility**: Ensures workflows behave consistently over time
-- **Compliance**: Repository security policies require SHA-pinned actions
-
-**When adding or updating workflows:**
-1. Always pin actions to specific commit SHA (40-character hash)
-2. Include a comment with the human-readable version tag (e.g., `# v4.2.2`)
-3. Use the same SHA hashes across workflows for consistency
-4. Verify the SHA matches the official release before using it
-
-**Standard Actions Used:**
+**Standard Actions:**
 - `actions/checkout`: `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2)
 - `actions/setup-node`: `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` (v4.1.0)
-- `oven-sh/setup-bun`: `4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5` (v2.0.1)
-- `denoland/setup-deno`: `be0a6a1c12850f58f0c99d5a4b7f62bb24be0669` (v2.1.0)
 - `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
 - `amannn/action-semantic-pull-request`: `0723387faaf9b38adef4775cd42cfd5155ed6017` (v5.5.3)
 
-### Branch Protection Rules
+**Branch Protection (Recommended):**
+Configure `master` branch to require passing `Test & Build` check before merging. This prevents Release Please PRs with failing tests/linting from being merged and blocking releases.
 
-**RECOMMENDED**: Configure branch protection for `master` to prevent broken releases.
+## Release Process (Release Please)
 
-**Why branch protection is important:**
-- Prevents merging Release Please PRs with failing checks
-- Catches formatting, lint, and test errors before they block publishing
-- Ensures code quality standards are met before release
-- Avoids failed release workflows that require manual intervention
+**Fully automated** via GitHub Actions. See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed instructions.
 
-**To configure branch protection on GitHub:**
+**How it works:**
+1. Merge commits to `main` with Conventional Commits format
+2. Release Please analyzes commits → creates/updates Release PR with changelog
+3. Merge Release PR → auto-publishes to npm/JSR + creates GitHub release
 
-1. Go to: **Settings** → **Branches** → **Add branch protection rule**
-2. Branch name pattern: `master`
-3. Enable these settings:
-   - ✅ **Require a pull request before merging**
-   - ✅ **Require status checks to pass before merging**
-     - Add required check: `Test & Build` (from `ci.yml` workflow)
-   - ✅ **Require branches to be up to date before merging**
-   - ✅ **Do not allow bypassing the above settings** (recommended)
-4. Click **Create** or **Save changes**
-
-**What this protects against:**
-- Release Please PRs with formatting errors (like the `jsr.json` formatting issue)
-- Type check failures that would break the build
-- Test failures that indicate broken functionality
-- Lint violations that don't meet code quality standards
-
-**Current CI checks** (from `.github/workflows/ci.yml`):
-- Type checking (`bun run typecheck`)
-- Linting and formatting (`bun run check`)
-- Unit tests (`bun run test:run`)
-- Build validation (`bun run test:run test/build.test.ts`)
-
-Once configured, Release Please PRs cannot be merged until all checks pass, preventing publication failures.
-
-## Release Process
-
-This project uses **Release Please** for fully automated release management via GitHub Actions.
-
-📖 **For maintainers**: See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed workflow instructions, troubleshooting, and practical examples.
-
-### How It Works
-
-1. **Automatic PR Creation**: When you merge commits to `main`, Release Please automatically:
-   - Analyzes commit messages (using Conventional Commits format)
-   - Determines the next version number (semver)
-   - Updates `CHANGELOG.md` with new entries
-   - Creates/updates a Release PR
-
-2. **Release Triggers**: When you merge the Release PR:
-   - Automatically runs all quality checks (tests, typecheck, lint)
-   - Builds the package
-   - Publishes to npm with provenance
-   - Publishes to JSR
-   - Creates a GitHub release with the version tag
-
-### Commit Message Format
-
-Use [Conventional Commits](https://www.conventionalcommits.org/) format:
-
-- `feat: add new feature` → Patch version bump (0.8.x) while in pre-1.0
-- `fix: resolve bug` → Patch version bump (0.8.x)
-- `feat!: breaking change` → Minor version bump (0.x.0) while in pre-1.0
-- `chore: update deps` → No release (internal changes)
-- `docs: update readme` → Included in changelog
-
-**Breaking changes**: Add `!` after the type or include `BREAKING CHANGE:` in commit body.
-
-### Version Control Strategy
-
-This project uses **controlled versioning** to prevent aggressive version bumps:
-
-- **Pre-1.0 Protection**: While version is below 1.0.0:
-  - `feat:` commits bump only **patch** (0.8.0 → 0.8.1)
-  - `feat!:` or `BREAKING CHANGE:` bumps only **minor** (0.8.0 → 0.9.0)
-  - Major version (1.0.0) requires **manual intervention**
-
-- **Manual Version Control**: To change minor/major version:
-  1. Edit `.release-please-manifest.json` and set desired version (e.g., `"0.9.0"` or `"1.0.0"`)
-  2. Commit and push: `git add . && git commit -m "chore: prepare for version X.Y.Z" && git push`
-  3. Release Please will use the new version as baseline
-
-- **Configuration**: See `bump-minor-pre-major` and `bump-patch-for-minor-pre-major` options in `release-please-config.json`
-
-### Release Workflow
-
-1. **Development**:
-   - Make changes and commit with conventional commit messages
-   - Push to `main` branch
-
-2. **Release Please automatically**:
-   - Creates/updates a Release PR
-   - Accumulates changes until you're ready to release
-
-3. **Publishing**:
-   - Review and merge the Release PR
-   - GitHub Actions automatically publishes to npm and JSR
-
-### Configuration Files
-
-- `.github/workflows/release-please.yml` - GitHub Actions workflow
-- `release-please-config.json` - Release Please configuration
+**Key config files:**
+- `release-please-config.json` - Configuration (version bump rules)
 - `.release-please-manifest.json` - Current version tracking
-- `RELEASE_PLEASE_MAINTAINER_GUIDE.md` - Maintainer workflow guide
 
-### Advanced Release Please Control
+**Version control:**
+- To bump to specific version: Edit `.release-please-manifest.json` manually
+- Commit changes: `git commit -m "chore: prepare for version X.Y.Z"`
+- Release Please uses new version as baseline
 
-#### Draft Pull Requests (Preventing Accidental Merges)
+**Rejecting aggressive version bump:**
+1. Close the Release PR on GitHub
+2. Remove `autorelease: pending` label
+3. Update `release-please-config.json` with version controls
+4. Push new commit → Release Please creates fresh PR
 
-To prevent accidentally merging a Release PR, enable **draft mode** in `release-please-config.json`:
+**Draft mode:** Set `"draft-pull-request": true` in config to create PRs as drafts (prevents accidental merges)
 
-```json
-{
-  "draft-pull-request": true,  // Change from false to true
-  "packages": {
-    ".": {
-      // ... your configuration
-    }
-  }
-}
-```
-
-This makes Release Please create PRs as **drafts** that must be manually marked as "Ready for review" before merging. Great for projects where you want an extra safety check.
-
-**Current setting**: `draft-pull-request: false` (PRs are immediately mergeable)
-
-#### Rejecting an Aggressive Version Bump
-
-If Release Please creates a PR with a version that's too aggressive (e.g., suggesting 1.0.0 when you're not ready):
-
-1. **Close the PR** - Click "Close pull request" on GitHub
-2. **Remove the label** - Remove the `autorelease: pending` label from the closed PR
-3. **Adjust configuration** - Update `release-please-config.json` with appropriate controls (e.g., `bump-minor-pre-major`)
-4. **Push new commits** - Release Please will create a new PR with correct version on next push to `master`
-
-**Important**: If you don't remove the `autorelease: pending` label, Release Please won't create new PRs (it checks for existing labeled PRs).
-
-#### What Happens to Existing PRs After Configuration Changes?
-
-**Existing open Release PRs will NOT automatically update their proposed version** when you change configuration options like `bump-minor-pre-major`.
-
-**Best practice after config changes:**
-1. Close the existing Release PR
-2. Remove the `autorelease: pending` label
-3. Make a new commit to `master` (even a small change like updating docs)
-4. Release Please will create a fresh PR with the new versioning rules
-
-#### Maintaining Parallel Release Branches (0.x and 1.x)
-
-To maintain multiple major versions simultaneously (e.g., bug fixes for 0.x while developing 1.x):
-
-1. **Create separate branches**:
-   ```bash
-   git checkout -b 0.x    # For 0.x maintenance
-   git checkout -b 1.x    # For 1.x development
-   ```
-
-2. **Create separate workflow files** for each branch:
-
-   `.github/workflows/release-0.x.yml`:
-   ```yaml
-   on:
-     push:
-       branches:
-         - 0.x
-   jobs:
-     release-please:
-       steps:
-         - uses: googleapis/release-please-action@...
-           with:
-             target-branch: 0.x
-             release-type: node
-   ```
-
-   `.github/workflows/release-1.x.yml`:
-   ```yaml
-   on:
-     push:
-       branches:
-         - 1.x
-   jobs:
-     release-please:
-       steps:
-         - uses: googleapis/release-please-action@...
-           with:
-             target-branch: 1.x
-             release-type: node
-   ```
-
-3. **Manage separately**:
-   - Each branch maintains its own `.release-please-manifest.json`
-   - Cherry-pick or backport bug fixes between branches as needed
-   - Release Please creates independent PRs for each branch
-
-**Note**: Release Please doesn't handle branch management or backporting - you must manually manage which commits go to which branches.
-
-#### Label System and PR Management
-
-Release Please uses labels to track PR state:
-- `autorelease: pending` - PR is waiting to be merged
-- `autorelease: triggered` - Release is in progress
-
-**Best practices**:
-- Always remove labels when closing PRs manually
-- Check for existing labeled PRs before expecting new ones
-- Use draft mode if you want to prevent quick accidental merges
-
-### Manual Release (Legacy)
-
-The old `bun run release` command (using release-it) is still available but deprecated in favor of the automated Release Please workflow.
+**Labels:**
+- `autorelease: pending` - PR waiting to merge
+- `autorelease: triggered` - Release in progress
 
 ## Notes for AI Assistants
 
-- This is a **learning/experimental project** - feel free to suggest improvements
-- **When working in Claude Code**: Use `npm` instead of `bun` for all package management and script execution commands
-  - Example: Use `npm run check:fix` instead of `bun run check:fix`
-  - Example: Use `npm install` instead of `bun install`
-  - Example: Use `npm test` instead of `bun test`
-- **Claude Code hooks are configured**: SessionStart hook runs `npm install` automatically, PostToolUse hook runs `npm run check` after file edits
-- Always run `npm run check:fix` and `npm run typecheck` before committing (when in Claude Code)
-- **Conventional Commits are ENFORCED** - all commit messages MUST follow the format (e.g., `feat:`, `fix:`, `chore:`)
-  - Commits will be rejected locally by Lefthook + commitlint if format is invalid
-  - GitHub Actions will also reject invalid commits in PRs (cannot be bypassed)
-  - PR titles must also follow Conventional Commits format
-  - Use lowercase after type (e.g., `feat: add feature` not `feat: Add feature`)
-  - Always include a colon and space after type (e.g., `feat:` not `feat`)
-- **Version bumps are controlled**: `feat:` → patch only, `feat!:` → minor only (pre-1.0)
-- To bump minor/major version, manually edit `.release-please-manifest.json`
-- **After changing Release Please config**: Close existing Release PR, remove `autorelease: pending` label, push new commit
-- Set `draft-pull-request: true` in config if you want PRs as drafts to prevent accidental merges
-- **Branch protection**: Recommend setting up required status checks (`Test & Build`) on `master` branch to prevent merging PRs with failing tests/linting
-- **For detailed Release Please workflows**: Refer to `RELEASE_PLEASE_MAINTAINER_GUIDE.md`
-- Maintain compatibility with Node 20+ and Node 22+
-- Keep both CJS and ESM exports working
-- Update tests when adding new functionality
-- Follow existing code style (managed by Biome)
-- Releases are fully automated via Release Please - just merge to main with proper commit messages
+**⚠️ CRITICAL - Conventional Commits:**
+- **ALL commits MUST follow Conventional Commits format** (e.g., `feat: description`, `fix: description`)
+- Enforced locally (Lefthook + commitlint) and remotely (GitHub Actions)
+- **Cannot be bypassed** - invalid commits will be rejected
+- PR titles must also follow format
+- Format: lowercase type, colon + space, lowercase description
+- `feat:` → patch, `feat!:` → minor (pre-1.0), major requires manual edit of `.release-please-manifest.json`
+
+**Development:**
+- Learning/experimental project - suggest improvements freely
+- Use `npm` (not `bun`) for all commands in Claude Code
+- Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check`
+- Always run `npm run check:fix` + `npm run typecheck` before committing
+- Maintain Node 20+/22+ compatibility
+- Keep CJS/ESM dual exports working
+- Update tests for new functionality
+- Follow Biome code style
+
+**Release workflow:**
+- Releases fully automated via Release Please
+- Merge to `main` with proper commit messages → Release PR created
+- Merge Release PR → auto-publish to npm/JSR
+- See `RELEASE_PLEASE_MAINTAINER_GUIDE.md` for details
+
+**Configuration changes:**
+- After changing `release-please-config.json`: Close PR, remove `autorelease: pending` label, push new commit
+- Enable `draft-pull-request: true` to prevent accidental merges
+- Set up branch protection on `master` with required `Test & Build` check
