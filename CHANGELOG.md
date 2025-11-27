@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.6](https://github.com/gander-tools/playground-js-lib/compare/v0.10.5...v0.10.6) (2025-11-27)
+
+
+### Bug Fixes
+
+* update denoland/setup-deno to correct v2.0.3 SHA ([b1b379f](https://github.com/gander-tools/playground-js-lib/commit/b1b379ffca0148e3b07d448d82f03262d0518e0e))
+* update denoland/setup-deno to correct v2.0.3 SHA ([#112](https://github.com/gander-tools/playground-js-lib/issues/112)) ([27fbdb6](https://github.com/gander-tools/playground-js-lib/commit/27fbdb656ddb1767aba7e632ab98fd9ce6160ad4))
+
 ## [0.10.5](https://github.com/gander-tools/playground-js-lib/compare/v0.10.4...v0.10.5) (2025-11-27)
 
 
