@@ -108,6 +108,42 @@ Lefthook is configured to run pre-commit checks. Hooks may include linting, form
 - `denoland/setup-deno`: `be0a6a1c12850f58f0c99d5a4b7f62bb24be0669` (v2.1.0)
 - `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
 
+### Branch Protection Rules
+
+**RECOMMENDED**: Configure branch protection for `master` to prevent broken releases.
+
+**Why branch protection is important:**
+- Prevents merging Release Please PRs with failing checks
+- Catches formatting, lint, and test errors before they block publishing
+- Ensures code quality standards are met before release
+- Avoids failed release workflows that require manual intervention
+
+**To configure branch protection on GitHub:**
+
+1. Go to: **Settings** → **Branches** → **Add branch protection rule**
+2. Branch name pattern: `master`
+3. Enable these settings:
+   - ✅ **Require a pull request before merging**
+   - ✅ **Require status checks to pass before merging**
+     - Add required check: `Test & Build` (from `ci.yml` workflow)
+   - ✅ **Require branches to be up to date before merging**
+   - ✅ **Do not allow bypassing the above settings** (recommended)
+4. Click **Create** or **Save changes**
+
+**What this protects against:**
+- Release Please PRs with formatting errors (like the `jsr.json` formatting issue)
+- Type check failures that would break the build
+- Test failures that indicate broken functionality
+- Lint violations that don't meet code quality standards
+
+**Current CI checks** (from `.github/workflows/ci.yml`):
+- Type checking (`bun run typecheck`)
+- Linting and formatting (`bun run check`)
+- Unit tests (`bun run test:run`)
+- Build validation (`bun run test:run test/build.test.ts`)
+
+Once configured, Release Please PRs cannot be merged until all checks pass, preventing publication failures.
+
 ## Release Process
 
 This project uses **Release Please** for fully automated release management via GitHub Actions.
@@ -297,6 +333,7 @@ The old `bun run release` command (using release-it) is still available but depr
 - To bump minor/major version, manually edit `.release-please-manifest.json`
 - **After changing Release Please config**: Close existing Release PR, remove `autorelease: pending` label, push new commit
 - Set `draft-pull-request: true` in config if you want PRs as drafts to prevent accidental merges
+- **Branch protection**: Recommend setting up required status checks (`Test & Build`) on `master` branch to prevent merging PRs with failing tests/linting
 - **For detailed Release Please workflows**: Refer to `RELEASE_PLEASE_MAINTAINER_GUIDE.md`
 - Maintain compatibility with Node 20+ and Node 22+
 - Keep both CJS and ESM exports working
