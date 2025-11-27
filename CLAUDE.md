@@ -156,29 +156,48 @@ This repository includes Claude Code hooks for automated development environment
 
 ### Configured Hooks
 
-**SessionStart Hook** (`.claude/hooks/session-start.sh`):
-- Automatically runs when Claude Code session starts
-- Installs npm dependencies if not present
-- Ensures Lefthook git hooks are installed
-- Displays project status, git status, and important reminders
-- Output is automatically added to Claude's context
-
-**PostToolUse Hook** (`.claude/hooks/post-tool-use.sh`):
-- Runs after Write/Edit/MultiEdit operations
-- Validates code style with Biome (`npm run check`)
-- Runs TypeScript type checking (`npm run typecheck`)
-- Provides feedback on code quality issues
-- Non-blocking (always exits successfully)
-
-### Hook Configuration
-
 Hooks are configured in `.claude/settings.json`:
+
+**SessionStart Hook**:
+- Runs: `npm install`
+- Automatically installs dependencies when Claude Code session starts
+- Timeout: 300 seconds (5 minutes)
+
+**PostToolUse Hook**:
+- Runs: `npm run check` (Biome linting + formatting)
+- Triggered after Write/Edit operations
+- Provides immediate feedback on code quality issues
+- Timeout: 120 seconds (2 minutes)
+
+### Configuration Example
 
 ```json
 {
   "hooks": {
-    "SessionStart": [...],
-    "PostToolUse": [...]
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm install",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -196,7 +215,7 @@ Create `.claude/settings.local.json` for local hook overrides (not version-contr
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Custom hook'",
+            "command": "echo 'Custom validation here'",
             "timeout": 30
           }
         ]
@@ -208,10 +227,10 @@ Create `.claude/settings.local.json` for local hook overrides (not version-contr
 
 ### Benefits
 
-- **Automatic setup**: Dependencies and git hooks installed on session start
-- **Code quality**: Instant feedback on style and type errors after editing
+- **Automatic setup**: Dependencies installed automatically on session start
+- **Code quality**: Instant feedback on style issues after editing
+- **Simple configuration**: Inline commands in JSON, no separate scripts needed
 - **Consistency**: Same development environment for all contributors using Claude Code
-- **Non-intrusive**: Hooks provide feedback but don't block operations
 
 ## GitHub Actions
 

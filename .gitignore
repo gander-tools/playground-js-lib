@@ -183,4 +183,3 @@ dist
 
 # Claude Code local settings
 .claude/settings.local.json
-.claude/hooks/*.log
