@@ -287,7 +287,11 @@ The old `bun run release` command (using release-it) is still available but depr
 ## Notes for AI Assistants
 
 - This is a **learning/experimental project** - feel free to suggest improvements
-- Always run `bun run check:fix` and `bun run typecheck` before committing
+- **When working in Claude Code**: Use `npm` instead of `bun` for all package management and script execution commands
+  - Example: Use `npm run check:fix` instead of `bun run check:fix`
+  - Example: Use `npm install` instead of `bun install`
+  - Example: Use `npm test` instead of `bun test`
+- Always run `npm run check:fix` and `npm run typecheck` before committing (when in Claude Code)
 - **Use Conventional Commits format** for all commit messages (e.g., `feat:`, `fix:`, `chore:`)
 - **Version bumps are controlled**: `feat:` → patch only, `feat!:` → minor only (pre-1.0)
 - To bump minor/major version, manually edit `.release-please-manifest.json`
