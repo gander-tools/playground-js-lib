@@ -1,0 +1,57 @@
+name: Format Release PR Files
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  format-files:
+    # Only run on Release Please PRs
+    if: startsWith(github.head_ref, 'release-please--') || contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run check:fix to format files
+        run: npm run check:fix
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push formatted files
+        if: steps.git-check.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: format release files with biome"
+          git push
+
+      - name: Log completion
+        if: steps.git-check.outputs.has_changes == 'true'
+        run: echo "✅ Release PR files have been formatted"
+
+      - name: Log no changes
+        if: steps.git-check.outputs.has_changes != 'true'
+        run: echo "✅ No formatting changes needed"
