@@ -1,4 +1,4 @@
-name: Semantic PR Title
+name: Validate PR Title
 
 on:
     pull_request:
@@ -9,7 +9,7 @@ permissions:
     statuses: write
 
 jobs:
-    semantic-pr:
+    validate-pr-title:
         name: Validate PR Title
         runs-on: ubuntu-latest
         steps:

@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  release-please:
+  create-release:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
@@ -22,9 +22,9 @@ jobs:
         id: release
 
   # Ten job wykona się TYLKO po zmerge'owaniu Release PR
-  publish-to-npm:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+  publish-npm:
+    needs: create-release
+    if: ${{ needs.create-release.outputs.release_created }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -82,14 +82,14 @@ jobs:
 
       - name: Log release info
         run: |
-          echo "✅ Successfully published version ${{ needs.release-please.outputs.version }}"
-          echo "📦 Package: @gander-tools/playground@${{ needs.release-please.outputs.version }}"
-          echo "🏷️  Tag: ${{ needs.release-please.outputs.tag_name }}"
+          echo "✅ Successfully published version ${{ needs.create-release.outputs.version }}"
+          echo "📦 Package: @gander-tools/playground@${{ needs.create-release.outputs.version }}"
+          echo "🏷️  Tag: ${{ needs.create-release.outputs.tag_name }}"
 
   # Publikacja do JSR po pomyślnej publikacji do npm
-  publish-to-jsr:
-    needs: [release-please, publish-to-npm]
-    if: ${{ needs.release-please.outputs.release_created }}
+  publish-jsr:
+    needs: [create-release, publish-npm]
+    if: ${{ needs.create-release.outputs.release_created }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -114,4 +114,4 @@ jobs:
       - name: Log JSR release info
         run: |
           echo "✅ Successfully published to JSR"
-          echo "📦 Version: ${{ needs.release-please.outputs.version }}"
+          echo "📦 Version: ${{ needs.create-release.outputs.version }}"
