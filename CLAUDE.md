@@ -78,6 +78,36 @@ The package supports both CommonJS and ESM:
 
 Lefthook is configured to run pre-commit checks. Hooks may include linting, formatting, and type checking.
 
+## GitHub Actions
+
+### Version Pinning Requirement
+
+**IMPORTANT**: All GitHub Actions workflows in this repository **MUST** use SHA-pinned action versions for security and reproducibility. This is a repository configuration requirement.
+
+**Example of correct version pinning:**
+```yaml
+- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+- uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+```
+
+**Why version pinning is required:**
+- **Security**: Prevents malicious code injection through compromised action versions
+- **Reproducibility**: Ensures workflows behave consistently over time
+- **Compliance**: Repository security policies require SHA-pinned actions
+
+**When adding or updating workflows:**
+1. Always pin actions to specific commit SHA (40-character hash)
+2. Include a comment with the human-readable version tag (e.g., `# v4.2.2`)
+3. Use the same SHA hashes across workflows for consistency
+4. Verify the SHA matches the official release before using it
+
+**Standard Actions Used:**
+- `actions/checkout`: `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2)
+- `actions/setup-node`: `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` (v4.1.0)
+- `oven-sh/setup-bun`: `4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5` (v2.0.1)
+- `denoland/setup-deno`: `be0a6a1c12850f58f0c99d5a4b7f62bb24be0669` (v2.1.0)
+- `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
+
 ## Release Process
 
 This project uses **Release Please** for fully automated release management via GitHub Actions.
