@@ -26,7 +26,9 @@
             "default": "./dist/index.mjs"
         }
     },
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "publishConfig": {
         "access": "public"
     },
@@ -47,19 +49,19 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@biomejs/biome": "1.9.4",
-        "@release-it/bumper": "7.0.1",
-        "@types/node": "22.13.5",
-        "@vitest/coverage-v8": "3.0.7",
-        "@vitest/ui": "3.0.7",
+        "@biomejs/biome": "2.3.2",
+        "@release-it/bumper": "7.0.5",
+        "@types/node": "24.9.2",
+        "@vitest/coverage-v8": "4.0.5",
+        "@vitest/ui": "4.0.5",
         "@vue/reactivity": "3.5.13",
         "git-cliff": "2.8.0",
-        "lefthook": "1.11.0",
+        "lefthook": "2.0.2",
         "pkgroll": "2.11.0",
         "publint": "0.3.6",
-        "release-it": "18.1.2",
+        "release-it": "19.0.5",
         "typescript": "5.7.3",
-        "vitest": "3.0.7"
+        "vitest": "4.0.5"
     },
     "peerDependencies": {
         "@vue/reactivity": "^3.0.0",

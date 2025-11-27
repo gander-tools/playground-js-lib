@@ -1,4 +1,4 @@
-import { type Ref, computed } from "@vue/reactivity";
+import { computed, type Ref } from "@vue/reactivity";
 
 /**
  * This function adds the two passed numbers together.
