@@ -20,9 +20,6 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
         id: release
-        with:
-          release-type: node
-          package-name: "@gander-tools/playground"
 
   # Ten job wykona się TYLKO po zmerge'owaniu Release PR
   publish-to-npm:
