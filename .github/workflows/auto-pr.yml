@@ -37,16 +37,12 @@ jobs:
                       echo "::notice::PR already exists: #$PR_NUMBER"
                     fi
 
-            -   name: Extract session ID from branch name
+            -   name: Extract PR title from branch name
                 id: extract-info
                 run: |
                     BRANCH_NAME="${{ github.ref_name }}"
-                    # Extract session ID (everything after last hyphen)
-                    SESSION_ID="${BRANCH_NAME##*-}"
-                    echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
-
                     # Create PR title from branch name
-                    PR_TITLE="[Claude AI] ${BRANCH_NAME#claude/}"
+                    PR_TITLE="${BRANCH_NAME#claude/}"
                     echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
 
             -   name: Create Pull Request
@@ -56,28 +52,18 @@ jobs:
                 run: |
                     BRANCH_NAME="${{ github.ref_name }}"
                     PR_TITLE="${{ steps.extract-info.outputs.pr_title }}"
-                    SESSION_ID="${{ steps.extract-info.outputs.session_id }}"
 
                     # Get commit messages for PR body
                     COMMITS=$(git log origin/master..HEAD --pretty=format:"- %s (%h)" | head -10)
 
                     # Create PR body
                     PR_BODY=$(cat << EOF
-                    ## 🤖 Automatyczny PR z Claude AI
-
-                    **Branch:** \`$BRANCH_NAME\`
-                    **Session ID:** \`$SESSION_ID\`
-                    **Autor:** @${{ github.actor }}
-
-                    ### Ostatnie commity:
+                    ### Recent Commits:
                     $COMMITS
 
                     ---
 
-                    Ten kod został wygenerowany przy pomocy asystenta Claude AI.
-                    Proszę o weryfikację przed merge'em.
-
-                    > ⚠️ **Uwaga:** Sprawdź testy, linting i type checking przed zaakceptowaniem zmian.
+                    This code was generated with the assistance of Claude AI.
                     EOF
                     )
 
@@ -88,7 +74,6 @@ jobs:
                       --base master \
                       --head "$BRANCH_NAME" \
                       --label "ai-generated" \
-                      --label "automated-pr" \
                       --label "claude-code"
 
             -   name: PR Summary
