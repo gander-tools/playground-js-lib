@@ -227,11 +227,11 @@ Configure `master` branch to require passing `Test & Build` check before merging
 - No secrets needed in GitHub repository settings
 - Publishes only from `master` branch via `release-please.yml` workflow
 
-**⚠️ First-time publish limitation:**
-- **Trusted publishers cannot CREATE new packages** - they can only update existing ones
-- **First publish must be manual:** Run `npm login` then `npm publish --access public` locally
-- After first manual publish, all subsequent releases work automatically through Actions
-- This is npm's security measure to prevent unauthorized package creation
+**⚠️ Common Trusted Publisher issues:**
+- **Workflow filename must match EXACTLY** - npm checks `.github/workflows/release-please.yml` path
+- **Repository owner/name must match** - verify `gander-tools/playground-js-lib` on npmjs.com
+- **Environment name** - if set in trusted publisher config, must match workflow's `environment:` setting
+- **Branch restrictions** - if configured, publish only works from specified branches
 
 ## Release Process (Release Please)
 
