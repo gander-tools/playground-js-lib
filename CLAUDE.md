@@ -74,9 +74,81 @@ The package supports both CommonJS and ESM:
 - **CJS**: `dist/index.cjs` with `dist/index.d.cts`
 - **ESM**: `dist/index.mjs` with `dist/index.d.mts`
 
+## Conventional Commits Enforcement
+
+This repository **enforces** [Conventional Commits](https://www.conventionalcommits.org/) format through multiple layers:
+
+### Local Enforcement (Lefthook + commitlint)
+
+**Commit messages are automatically validated** when you commit locally. Invalid commits will be rejected immediately.
+
+**Configuration files:**
+- `commitlint.config.js` - Defines allowed commit types and rules
+- `lefthook.yml` - Git hooks configuration
+
+**Allowed commit types:**
+- `feat:` - New feature (→ patch bump in pre-1.0)
+- `fix:` - Bug fix (→ patch bump)
+- `docs:` - Documentation changes
+- `style:` - Code style/formatting (no logic changes)
+- `refactor:` - Code refactoring
+- `perf:` - Performance improvements
+- `test:` - Adding or updating tests
+- `build:` - Build system or dependencies
+- `ci:` - CI configuration changes
+- `chore:` - Other changes (no src/test changes)
+- `revert:` - Revert a previous commit
+
+**Breaking changes:** Add `!` after type (e.g., `feat!:`) or include `BREAKING CHANGE:` in commit body.
+
+**Examples:**
+```bash
+✅ feat: add new calculation method
+✅ fix: resolve memory leak in cache
+✅ feat!: redesign public API (breaking change)
+✅ docs: update installation instructions
+❌ Added new feature (missing type)
+❌ feat Add feature (missing colon)
+❌ FEAT: add feature (uppercase type)
+```
+
+### Remote Enforcement (GitHub Actions)
+
+**Two GitHub Actions workflows enforce commit quality:**
+
+1. **`.github/workflows/commitlint.yml`** - Validates all commit messages in PRs
+   - Runs on every PR and push to `master`
+   - **Required check** - PRs cannot be merged if commits are invalid
+   - Validates commit format against `commitlint.config.js`
+
+2. **`.github/workflows/semantic-pr.yml`** - Validates PR title format
+   - Runs when PR is opened, edited, or synchronized
+   - **Required check** - PR title must follow Conventional Commits
+   - Ensures Release Please can generate proper changelogs
+
+**⚠️ Important:** Both checks are **required** and will block merging if validation fails.
+
+### Bypassing Local Hooks (Not Recommended)
+
+While you can skip local hooks with `git commit --no-verify`, **GitHub Actions will still reject invalid commits** when you push. It's better to fix the commit message locally.
+
+**To amend a commit message:**
+```bash
+git commit --amend -m "feat: correct commit message"
+```
+
 ## Git Hooks
 
-Lefthook is configured to run pre-commit checks. Hooks may include linting, formatting, and type checking.
+Lefthook is configured with two hooks:
+
+1. **`pre-commit`** - Runs `bun run check` (Biome linter/formatter)
+2. **`commit-msg`** - Runs `commitlint` to validate commit message format
+
+Install hooks after cloning:
+```bash
+npm install  # or bun install
+npx lefthook install
+```
 
 ## GitHub Actions
 
@@ -107,6 +179,7 @@ Lefthook is configured to run pre-commit checks. Hooks may include linting, form
 - `oven-sh/setup-bun`: `4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5` (v2.0.1)
 - `denoland/setup-deno`: `be0a6a1c12850f58f0c99d5a4b7f62bb24be0669` (v2.1.0)
 - `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
+- `amannn/action-semantic-pull-request`: `0723387faaf9b38adef4775cd42cfd5155ed6017` (v5.5.3)
 
 ### Branch Protection Rules
 
@@ -328,7 +401,12 @@ The old `bun run release` command (using release-it) is still available but depr
   - Example: Use `npm install` instead of `bun install`
   - Example: Use `npm test` instead of `bun test`
 - Always run `npm run check:fix` and `npm run typecheck` before committing (when in Claude Code)
-- **Use Conventional Commits format** for all commit messages (e.g., `feat:`, `fix:`, `chore:`)
+- **Conventional Commits are ENFORCED** - all commit messages MUST follow the format (e.g., `feat:`, `fix:`, `chore:`)
+  - Commits will be rejected locally by Lefthook + commitlint if format is invalid
+  - GitHub Actions will also reject invalid commits in PRs (cannot be bypassed)
+  - PR titles must also follow Conventional Commits format
+  - Use lowercase after type (e.g., `feat: add feature` not `feat: Add feature`)
+  - Always include a colon and space after type (e.g., `feat:` not `feat`)
 - **Version bumps are controlled**: `feat:` → patch only, `feat!:` → minor only (pre-1.0)
 - To bump minor/major version, manually edit `.release-please-manifest.json`
 - **After changing Release Please config**: Close existing Release PR, remove `autorelease: pending` label, push new commit
