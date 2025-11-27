@@ -1,4 +1,4 @@
-name: Lint Commit Messages
+name: Validate Commits
 
 on:
     pull_request:
@@ -13,8 +13,8 @@ permissions:
     pull-requests: read
 
 jobs:
-    commitlint:
-        name: Commitlint
+    validate-commit-messages:
+        name: Validate Commit Messages
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code

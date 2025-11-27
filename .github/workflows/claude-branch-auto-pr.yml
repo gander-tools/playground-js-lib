@@ -1,4 +1,4 @@
-name: Auto PR for Claude Branches
+name: Claude Branch Auto PR
 
 on:
     push:
@@ -10,7 +10,7 @@ permissions:
     pull-requests: write
 
 jobs:
-    create-pr:
+    create-claude-pr:
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code

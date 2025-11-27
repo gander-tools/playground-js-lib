@@ -63,8 +63,8 @@ Conventional Commits enable:
 - Config: `commitlint.config.js`, `lefthook.yml`
 
 **2. Remote (GitHub Actions)**
-- `.github/workflows/commitlint.yml` - Validates ALL commit messages in PRs (**required check**)
-- `.github/workflows/semantic-pr.yml` - Validates PR titles (**required check**)
+- `.github/workflows/validate-commits.yml` - Validates ALL commit messages in PRs (**required check**)
+- `.github/workflows/validate-pr-title.yml` - Validates PR titles (**required check**)
 - PRs cannot merge if validation fails
 
 **3. Cannot Be Bypassed**
@@ -196,10 +196,10 @@ Configured in `.claude/settings.json` for automated development environment:
 ## GitHub Actions
 
 **Workflows:**
-- `ci.yml` - Tests, typecheck, lint, build validation (runs on all PRs)
+- `test-and-build.yml` - Tests, typecheck, lint, build validation (runs on all PRs)
 - `release-please.yml` - Automated releases
-- `commitlint.yml` - Validates commit messages (**required check**)
-- `semantic-pr.yml` - Validates PR titles (**required check**)
+- `validate-commits.yml` - Validates commit messages (**required check**)
+- `validate-pr-title.yml` - Validates PR titles (**required check**)
 
 **Version Pinning (Required):**
 All actions MUST use SHA-pinned versions for security:
