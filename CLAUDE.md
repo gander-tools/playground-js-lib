@@ -126,6 +126,27 @@ Conventional Commits enable:
 - `npm run prepack` - Build CJS/ESM to dist/
 - `npm run publint` - Validate package
 
+## Package Lock Files
+
+**⚠️ IMPORTANT:** This project **does NOT maintain package lock files** (`package-lock.json`, `npm-shrinkwrap.json`).
+
+**Why:**
+- Learning/experimental project - dependencies update frequently
+- Simpler workflow for quick iterations
+- No production deployments requiring lock file stability
+
+**Implications:**
+- Always use `npm install` (NOT `npm ci`) - in local development and CI/CD
+- `npm ci` will fail because it requires a lock file
+- GitHub Actions workflows use `npm install` for dependency installation
+- Dependency versions are controlled by `package.json` semver ranges
+
+**In workflows:**
+```yaml
+- name: Install dependencies
+  run: npm install  # NOT npm ci
+```
+
 ## Development Workflow
 
 1. Edit files in `src/`
@@ -283,6 +304,7 @@ Configure `master` branch to require passing `Test & Build` check before merging
 **Development:**
 - Learning/experimental project - suggest improvements freely
 - Use `npm` (not `bun`) for all commands in Claude Code
+- **ALWAYS use `npm install` (NEVER `npm ci`)** - project does not maintain lock files
 - Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check`
 - Always run `npm run check:fix` + `npm run typecheck` before committing
 - Maintain Node 20+/22+ compatibility
