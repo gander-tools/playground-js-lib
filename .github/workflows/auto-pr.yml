@@ -18,6 +18,22 @@ jobs:
                 with:
                     fetch-depth: 0
 
+            -   name: Ensure base branch exists
+                run: |
+                    # Fetch master branch explicitly to ensure it exists
+                    git fetch origin master:refs/remotes/origin/master || {
+                        echo "::error::Failed to fetch origin/master. The base branch may not exist."
+                        exit 1
+                    }
+
+                    # Verify we can access it
+                    if ! git rev-parse origin/master >/dev/null 2>&1; then
+                        echo "::error::origin/master does not exist after fetch"
+                        exit 1
+                    fi
+
+                    echo "::notice::Successfully verified origin/master exists"
+
             -   name: Check if PR already exists
                 id: check-pr
                 env:
@@ -40,9 +56,28 @@ jobs:
             -   name: Extract PR title from first commit
                 id: extract-info
                 run: |
+                    # Verify there are commits to process
+                    COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
+
+                    if [ "$COMMIT_COUNT" -eq 0 ]; then
+                        echo "::error::No commits found between origin/master and HEAD"
+                        echo "::error::This branch may not have diverged from master yet"
+                        exit 1
+                    fi
+
+                    echo "::notice::Found $COMMIT_COUNT commit(s) on this branch"
+
                     # Get title from first commit on branch
                     PR_TITLE=$(git log origin/master..HEAD --pretty=format:"%s" --reverse | head -1)
+
+                    # Validate PR title is not empty
+                    if [ -z "$PR_TITLE" ]; then
+                        echo "::error::Could not extract PR title from commits"
+                        exit 1
+                    fi
+
                     echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+                    echo "::notice::PR title will be: $PR_TITLE"
 
             -   name: Create Pull Request
                 if: steps.check-pr.outputs.pr_exists == '0'
@@ -52,8 +87,20 @@ jobs:
                     BRANCH_NAME="${{ github.ref_name }}"
                     PR_TITLE="${{ steps.extract-info.outputs.pr_title }}"
 
+                    # Validate PR title exists
+                    if [ -z "$PR_TITLE" ]; then
+                        echo "::error::PR title is empty, cannot create PR"
+                        exit 1
+                    fi
+
                     # Get commit messages for PR body
                     COMMITS=$(git log origin/master..HEAD --pretty=format:"- %s (%h)" | head -10)
+
+                    # Validate we have commits
+                    if [ -z "$COMMITS" ]; then
+                        echo "::error::No commits found for PR body"
+                        exit 1
+                    fi
 
                     # Create PR body
                     PR_BODY=$(cat << EOF
@@ -65,6 +112,8 @@ jobs:
                     This code was generated with the assistance of Claude AI.
                     EOF
                     )
+
+                    echo "::notice::Creating PR with title: $PR_TITLE"
 
                     # Create the PR
                     gh pr create \
