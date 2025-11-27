@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.10.1](https://github.com/gander-tools/playground-js-lib/compare/v0.10.0...v0.10.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* add NODE_AUTH_TOKEN to npm publish step in release workflow ([d2d12a7](https://github.com/gander-tools/playground-js-lib/commit/d2d12a77d7611b78c5fba1ce7119d795649eb327))
+* add NODE_AUTH_TOKEN to npm publish step in release workflow ([9786ee1](https://github.com/gander-tools/playground-js-lib/commit/9786ee18abe6924d026cb29670d241042bee2696))
+* resolve formatting error in jsr.json blocking Release Please publishing ([50c778e](https://github.com/gander-tools/playground-js-lib/commit/50c778e5ab8f1645d6be8baaf672060961c97651))
+
+
+### Documentation
+
+* add branch protection configuration guide to prevent broken releases ([6474c1f](https://github.com/gander-tools/playground-js-lib/commit/6474c1ff111e0484ec3f18d7f6454a0b6e4535f5))
+* add branch protection configuration guide to prevent broken releases ([0dab8b5](https://github.com/gander-tools/playground-js-lib/commit/0dab8b5a4b5e5e98caf5819787f7757e818a9147))
+
 ## [0.10.0](https://github.com/gander-tools/playground-js-lib/compare/v0.9.0...v0.10.0) (2025-11-27)
 
 
