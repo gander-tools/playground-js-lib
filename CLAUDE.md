@@ -131,13 +131,29 @@ This project uses **Release Please** for fully automated release management via 
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-- `feat: add new feature` → Minor version bump (0.x.0)
-- `fix: resolve bug` → Patch version bump (0.0.x)
-- `feat!: breaking change` → Major version bump (x.0.0)
+- `feat: add new feature` → Patch version bump (0.8.x) while in pre-1.0
+- `fix: resolve bug` → Patch version bump (0.8.x)
+- `feat!: breaking change` → Minor version bump (0.x.0) while in pre-1.0
 - `chore: update deps` → No release (internal changes)
 - `docs: update readme` → Included in changelog
 
 **Breaking changes**: Add `!` after the type or include `BREAKING CHANGE:` in commit body.
+
+### Version Control Strategy
+
+This project uses **controlled versioning** to prevent aggressive version bumps:
+
+- **Pre-1.0 Protection**: While version is below 1.0.0:
+  - `feat:` commits bump only **patch** (0.8.0 → 0.8.1)
+  - `feat!:` or `BREAKING CHANGE:` bumps only **minor** (0.8.0 → 0.9.0)
+  - Major version (1.0.0) requires **manual intervention**
+
+- **Manual Version Control**: To change minor/major version:
+  1. Edit `.release-please-manifest.json` and set desired version (e.g., `"0.9.0"` or `"1.0.0"`)
+  2. Commit and push: `git add . && git commit -m "chore: prepare for version X.Y.Z" && git push`
+  3. Release Please will use the new version as baseline
+
+- **Configuration**: See `bump-minor-pre-major` and `bump-patch-for-minor-pre-major` options in `release-please-config.json`
 
 ### Release Workflow
 
@@ -168,6 +184,8 @@ The old `bun run release` command (using release-it) is still available but depr
 - This is a **learning/experimental project** - feel free to suggest improvements
 - Always run `bun run check:fix` and `bun run typecheck` before committing
 - **Use Conventional Commits format** for all commit messages (e.g., `feat:`, `fix:`, `chore:`)
+- **Version bumps are controlled**: `feat:` → patch only, `feat!:` → minor only (pre-1.0)
+- To bump minor/major version, manually edit `.release-please-manifest.json`
 - Maintain compatibility with Node 20+ and Node 22+
 - Keep both CJS and ESM exports working
 - Update tests when adding new functionality

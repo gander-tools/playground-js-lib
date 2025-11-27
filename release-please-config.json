@@ -4,6 +4,8 @@
         ".": {
             "release-type": "node",
             "package-name": "@gander-tools/playground",
+            "bump-minor-pre-major": true,
+            "bump-patch-for-minor-pre-major": true,
             "changelog-sections": [
                 {
                     "type": "feat",
