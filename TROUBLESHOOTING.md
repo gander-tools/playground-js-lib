@@ -4,7 +4,253 @@ This document contains solutions to common problems encountered in this project.
 
 ## Table of Contents
 
+- [Missing Dependencies and Code Formatting Issues](#missing-dependencies-and-code-formatting-issues)
 - [npm Publish Failures with Trusted Publishers](#npm-publish-failures-with-trusted-publishers)
+
+---
+
+## Missing Dependencies and Code Formatting Issues
+
+### Problem Summary
+
+When working with Claude Code, sessions would fail due to missing dependencies or code would
+be written with incorrect formatting, causing pre-commit hooks to fail.
+
+**Symptoms:**
+- Error: "Cannot find module 'X'" when trying to run npm scripts
+- Commands like `npm run check` fail with "module not found"
+- Code written by Claude fails Biome formatting checks
+- Pre-commit hooks reject commits due to formatting errors
+- Manual intervention needed to run `npm install` and `npm run check:fix`
+- Development workflow interrupted by missing setup steps
+
+### Root Cause
+
+**Two separate issues:**
+
+1. **Missing dependencies on session start**
+   - Claude Code sessions start with a clean environment
+   - Dependencies not automatically installed from package.json
+   - Tools like Biome, TypeScript, etc. not available
+   - Scripts in package.json cannot execute
+
+2. **No automated code validation after edits**
+   - Claude writes/edits files but doesn't automatically validate them
+   - Formatting errors only discovered when committing
+   - Pre-commit hooks fail, requiring manual fixes
+   - Workflow: edit → commit fails → run check:fix → commit again (inefficient)
+
+### Solution: Claude Code Hooks
+
+Configure `.claude/settings.json` with **SessionStart** and **PostToolUse** hooks to automate
+dependency installation and code validation.
+
+#### Complete Configuration
+
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": ["Skill"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm install",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+#### Hook Explanations
+
+**SessionStart Hook:**
+- **Runs**: `npm install`
+- **When**: Automatically on Claude Code session start
+- **Purpose**: Ensures all dependencies are installed before any work begins
+- **Timeout**: 300 seconds (5 minutes) - sufficient for large dependency trees
+- **Benefit**: No "module not found" errors during development
+
+**PostToolUse Hook:**
+- **Runs**: `npm run check` (Biome linting + formatting)
+- **When**: After Write/Edit tool operations
+- **Purpose**: Immediate feedback on code quality issues
+- **Timeout**: 120 seconds (2 minutes)
+- **Benefit**: Catch formatting errors immediately, not at commit time
+
+#### Implementation Evolution
+
+The hooks were initially implemented with separate shell scripts, but were simplified to
+inline commands for easier maintenance:
+
+**Original approach (deprecated):**
+```
+.claude/hooks/session-start.sh
+.claude/hooks/post-tool-use.sh
+```
+
+**Current approach (recommended):**
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm install"
+      }
+    ]
+  }
+}
+```
+
+**Why inline commands?**
+- Simpler configuration (no separate files)
+- Easier to understand and modify
+- Less file clutter in `.claude/` directory
+- Consistent with JSON-based configuration
+
+### Local Customization
+
+Create `.claude/settings.local.json` for personal hook overrides (not version-controlled):
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run typecheck",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Note**: Add `.claude/settings.local.json` to `.gitignore` to prevent committing
+personal settings:
+
+```gitignore
+# .gitignore
+.claude/settings.local.json
+```
+
+### Benefits
+
+✅ **Automated setup** - Dependencies installed automatically on session start
+✅ **Immediate feedback** - Code quality issues caught right after editing
+✅ **Fewer failed commits** - Formatting validated before commit hooks run
+✅ **Consistent environment** - Same setup for all Claude Code users
+✅ **No manual intervention** - No need to remember to run `npm install` or `npm run check`
+✅ **Faster development** - Workflow: edit → auto-validate → commit succeeds
+
+### Workflow Comparison
+
+**Without hooks:**
+```
+1. Start Claude Code session
+2. Try to run npm script → ❌ Error: dependencies not installed
+3. Manually run: npm install
+4. Edit code with Claude
+5. Commit changes → ❌ Pre-commit hook fails (formatting errors)
+6. Manually run: npm run check:fix
+7. Commit again → ✅ Success
+```
+
+**With hooks:**
+```
+1. Start Claude Code session → ✅ Dependencies auto-installed
+2. Edit code with Claude → ✅ Auto-validated immediately
+3. Commit changes → ✅ Success (already formatted)
+```
+
+### Related Changes
+
+- **PR #97**: `feat: add claude code hooks configuration`
+- **Commit**: `e4303d9`
+- Initial implementation with shell scripts, then refactored to inline commands
+
+### Verification
+
+#### Test SessionStart Hook:
+
+1. Delete `node_modules/` directory
+2. Start new Claude Code session
+3. Check that `node_modules/` is recreated automatically
+4. Verify dependencies are available: `npm run check` should work
+
+#### Test PostToolUse Hook:
+
+1. Edit a file with Claude (e.g., add a function to `src/index.ts`)
+2. Watch for hook output showing `npm run check` execution
+3. If formatting is wrong, you'll see immediate feedback
+4. Fix is applied automatically or error is shown
+
+#### View Hook Execution:
+
+Hook output appears in Claude Code session as:
+```
+[SessionStart:startup hook success]: Dependencies installed
+[PostToolUse:Write hook success]: Code validation passed
+```
+
+Or on failure:
+```
+[PostToolUse:Write hook failed]: Biome found formatting errors
+```
+
+### Troubleshooting Hook Issues
+
+#### Hook doesn't run:
+
+- Check `.claude/settings.json` syntax is valid JSON
+- Verify `"matcher"` regex matches the event (e.g., `"Write|Edit"`)
+- Check Claude Code console for hook execution logs
+
+#### Hook times out:
+
+- Increase `"timeout"` value (in seconds)
+- For SessionStart, 300s should be sufficient
+- For PostToolUse, 120s should be sufficient
+
+#### Hook fails with command not found:
+
+- Ensure `cd "$CLAUDE_PROJECT_DIR"` is in the command
+- Use absolute paths if needed
+- Check that npm is available in Claude Code environment
+
+### Best Practices
+
+1. **Keep hooks fast** - Long-running hooks slow down development
+2. **Use appropriate timeouts** - Balance between reliability and speed
+3. **Test locally** - Verify hooks work before committing configuration
+4. **Document custom hooks** - Add comments in settings.json for team clarity
+5. **Use local overrides** - Personal preferences go in `.local.json`, not main config
 
 ---
 
