@@ -1,0 +1,28 @@
+name: Secrets Detection
+
+on:
+    pull_request:
+    push:
+        branches:
+            - master
+    schedule:
+        # Run weekly on Sundays at 00:00 UTC
+        -   cron: '0 0 * * 0'
+
+permissions:
+    contents: read
+
+jobs:
+    gitleaks:
+        name: Scan for Secrets
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+                with:
+                    fetch-depth: 0
+
+            -   name: Run Gitleaks
+                uses: gitleaks/gitleaks-action@1f2d10fb689bc87a705d1ab8f460e153e9c3f9b0 # v2.4.0
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
