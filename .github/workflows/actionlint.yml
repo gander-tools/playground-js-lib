@@ -1,0 +1,31 @@
+name: Lint GitHub Actions Workflows
+
+on:
+    pull_request:
+        paths:
+            - '.github/workflows/**'
+    push:
+        branches:
+            - master
+        paths:
+            - '.github/workflows/**'
+
+permissions:
+    contents: read
+
+jobs:
+    actionlint:
+        name: Lint Workflows
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+            -   name: Download actionlint
+                id: get_actionlint
+                run: |
+                    bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+                    echo "actionlint_path=${PWD}/actionlint" >> "$GITHUB_OUTPUT"
+
+            -   name: Run actionlint
+                run: ${{ steps.get_actionlint.outputs.actionlint_path }} -color
