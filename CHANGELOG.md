@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.10.10](https://github.com/gander-tools/playground-js-lib/compare/v0.10.9...v0.10.10) (2025-11-28)
+
+
+### Documentation
+
+* add claude code hooks troubleshooting section ([908c983](https://github.com/gander-tools/playground-js-lib/commit/908c983a2605a3996b65bb9c7d02285457740d14))
+* add comprehensive code validation and security tools overview ([aa2e31c](https://github.com/gander-tools/playground-js-lib/commit/aa2e31c7c3bd5c863df1f4c6735e01155f04b758))
+* add comprehensive troubleshooting guide with all solved issues ([#132](https://github.com/gander-tools/playground-js-lib/issues/132)) ([43f66c9](https://github.com/gander-tools/playground-js-lib/commit/43f66c94e84ddac260d96ceef3c257e86919b629))
+* add conventional commits enforcement troubleshooting section ([fec93c9](https://github.com/gander-tools/playground-js-lib/commit/fec93c9dffdc8545d3153fb9da06b725261a5ed3))
+* add npm trusted publishers troubleshooting guide ([fef29b9](https://github.com/gander-tools/playground-js-lib/commit/fef29b9ecd59e73c582492cceb6f01304c1df34a))
+* add npm trusted publishers troubleshooting guide ([#130](https://github.com/gander-tools/playground-js-lib/issues/130)) ([9f77685](https://github.com/gander-tools/playground-js-lib/commit/9f776859b6cb2e6524615d3d99d788a24cc9e36a))
+* document lefthook prepare script and npm ci behavior in CI/CD ([#133](https://github.com/gander-tools/playground-js-lib/issues/133)) ([76c2c2b](https://github.com/gander-tools/playground-js-lib/commit/76c2c2b792d052e131ed1f515e7f5fcd4fbe78be))
+* fix table of contents after merge with master ([31508c7](https://github.com/gander-tools/playground-js-lib/commit/31508c7f8f2f7907f43ae64eee7614dcec4a15b3))
+* reorganize troubleshooting guide for readability ([9600f4f](https://github.com/gander-tools/playground-js-lib/commit/9600f4fef67381a8f6fefb7d9b6024e164138b55))
+
 ## [0.10.9](https://github.com/gander-tools/playground-js-lib/compare/v0.10.8...v0.10.9) (2025-11-28)
 
 
