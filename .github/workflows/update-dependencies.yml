@@ -31,7 +31,7 @@ jobs:
 
             -   name: Run tests to verify updates
                 run: |
-                    npm install
+                    npm install --ignore-scripts
                     npm run typecheck
                     npm run lint
                     npm run test:run

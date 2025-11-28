@@ -136,15 +136,25 @@ Conventional Commits enable:
 - No production deployments requiring lock file stability
 
 **Implications:**
-- Always use `npm install` (NOT `npm ci`) - in local development and CI/CD
-- `npm ci` will fail because it requires a lock file
-- GitHub Actions workflows use `npm install` for dependency installation
-- Dependency versions are controlled by `package.json` semver ranges
+- ✅ **Local development**: Use `npm install` (installs lefthook via `prepare` script)
+- ✅ **CI/CD**: Use `npm install --ignore-scripts` (skips lefthook installation)
+- ❌ `npm ci` will fail (requires lock file to exist)
+- Dependency versions controlled by `package.json` semver ranges
+
+**Why skip scripts in CI?**
+- Lefthook git hooks are not needed in CI (no commits from CI)
+- Prevents potential issues in containerized CI environments
+- Faster installation without running lifecycle scripts
 
 **In workflows:**
 ```yaml
 - name: Install dependencies
-  run: npm install  # NOT npm ci
+  run: npm install --ignore-scripts  # Skips prepare script (lefthook)
+```
+
+**Local development:**
+```bash
+npm install  # Runs prepare script → installs lefthook
 ```
 
 ## Development Workflow
@@ -337,7 +347,8 @@ npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of in
 **Development:**
 - Learning/experimental project - suggest improvements freely
 - Use `npm` (not `bun`) for all commands in Claude Code
-- **ALWAYS use `npm install` (NEVER `npm ci`)** - project does not maintain lock files
+- **ALWAYS use `npm install` (NEVER `npm ci`)** - project does not maintain lock files (local development context)
+- In CI/CD: use `npm install --ignore-scripts` to skip lefthook installation
 - Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check:fix`
 - Always run `npm run check:fix` + `npm run typecheck` before committing
 - Maintain Node 20+/22+ compatibility

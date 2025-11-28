@@ -158,27 +158,47 @@ The `prepare` script lifecycle hook is **NOT executed** by `npm ci`, only by `np
 **Why this matters:**
 - `npm ci` - skips ALL lifecycle scripts (including `prepare`) for security and speed
 - `npm install` - runs lifecycle scripts including `prepare`
-- Without `prepare` script, lefthook hooks won't be installed automatically
+- Lefthook hooks are NOT needed in CI (can cause issues in containerized environments)
 
 **Impact on this project:**
 This project **does NOT maintain lock files** (`package-lock.json`), therefore:
-- ✅ **MUST use `npm install`** in CI/CD (not `npm ci`)
-- ✅ `npm install` runs `prepare` script → installs lefthook hooks
-- ❌ `npm ci` would fail anyway (requires lock file to exist)
+- ❌ **Cannot use `npm ci`** (requires lock file to exist)
+- ✅ **MUST use `npm install --ignore-scripts`** in CI/CD
+- ✅ **Use `npm install`** locally (installs lefthook via `prepare` script)
+
+**CI/CD Configuration:**
+```yaml
+# GitHub Actions - skip lefthook installation in CI
+- name: Install dependencies
+  run: npm install --ignore-scripts
+
+# Lefthook hooks are not needed in CI (no git commits from CI)
+# --ignore-scripts prevents prepare script from running
+```
+
+**Local Development:**
+```bash
+# Install dependencies WITH lefthook hooks
+npm install
+
+# Verify lefthook installed
+npx lefthook version
+```
 
 **For projects WITH lock files:**
-If using `npm ci` in CI/CD, you must manually install lefthook:
 ```yaml
-# GitHub Actions example
-- run: npm ci
-- run: npx lefthook install  # Manual install required!
+# Use npm ci with --ignore-scripts to skip lefthook
+- run: npm ci --ignore-scripts
 - run: npm test
+
+# Only install lefthook if needed (usually not in CI)
 ```
 
 **Why `prepare` is the right choice:**
-- Runs after `npm install` and before `npm publish`
-- Perfect for installing git hooks in development
-- Alternative: `postinstall` (runs in CI too, which may not be desired)
+- Runs after `npm install` automatically (local development)
+- Skipped in CI with `--ignore-scripts` flag
+- Runs before `npm publish` (ensures hooks installed before testing package)
+- Alternative: `postinstall` (harder to skip selectively)
 
 ### Works With
 - **Commitlint** - Validates commit messages
