@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.8](https://github.com/gander-tools/playground-js-lib/compare/v0.10.7...v0.10.8) (2025-11-28)
+
+
+### Bug Fixes
+
+* Update condition for format-files job ([0d7b748](https://github.com/gander-tools/playground-js-lib/commit/0d7b748b911150bf2d1a08c8ee3f1798b0970369))
+* Update condition for format-files job ([#123](https://github.com/gander-tools/playground-js-lib/issues/123)) ([e5456e5](https://github.com/gander-tools/playground-js-lib/commit/e5456e539bc9067a5ab02559a8fe648d46afa86e))
+
 ## [0.10.7](https://github.com/gander-tools/playground-js-lib/compare/v0.10.6...v0.10.7) (2025-11-27)
 
 
