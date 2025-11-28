@@ -5,6 +5,7 @@ This document contains solutions to common problems encountered in this project.
 ## Table of Contents
 
 - [Missing Dependencies and Code Formatting Issues](#missing-dependencies-and-code-formatting-issues)
+- [Conventional Commits Not Enforced](#conventional-commits-not-enforced)
 - [npm Publish Failures with Trusted Publishers](#npm-publish-failures-with-trusted-publishers)
 
 ---
@@ -251,6 +252,471 @@ Or on failure:
 3. **Test locally** - Verify hooks work before committing configuration
 4. **Document custom hooks** - Add comments in settings.json for team clarity
 5. **Use local overrides** - Personal preferences go in `.local.json`, not main config
+
+---
+
+## Conventional Commits Not Enforced
+
+### Problem Summary
+
+Without enforced commit message validation, developers could create commits with invalid formats,
+breaking Release Please's ability to parse commits, generate changelogs, and determine version
+bumps correctly.
+
+**Symptoms:**
+- Commits with messages like "fixed bug" or "added feature" (no type prefix)
+- Release Please errors: "commit could not be parsed"
+- Release Please unable to determine version bump type
+- Empty or incorrect changelog entries
+- Manual intervention needed to fix commit history
+- Inconsistent commit message styles across contributors
+- Version bumps not matching actual changes (feat commits treated as chore)
+
+### Root Cause
+
+**Release Please requires Conventional Commits format:**
+
+```
+type: description
+
+type(scope): description
+
+type!: description (breaking change)
+```
+
+**Without enforcement:**
+- No validation at commit time
+- Developers unaware of format requirements
+- Easy to forget or misformat commit messages
+- Only discovered when Release Please fails
+- Fixing requires rewriting git history (risky)
+
+**Critical for Release Please:**
+- `feat:` commits → patch bump (pre-1.0) or minor bump (post-1.0)
+- `fix:` commits → patch bump
+- `feat!:` or `BREAKING CHANGE:` → minor bump (pre-1.0) or major bump (post-1.0)
+- Other types (`docs:`, `chore:`, etc.) → no version bump
+- Invalid format → Release Please cannot parse → release blocked
+
+### Solution: Multi-Layer Commit Validation
+
+Implement **three layers** of validation that cannot be bypassed:
+
+1. **Local validation** (Lefthook + commitlint) - immediate feedback
+2. **GitHub Actions PR validation** (validate-commits.yml) - validates all commits in PR
+3. **GitHub Actions PR title validation** (validate-pr-title.yml) - validates PR title format
+
+#### Layer 1: Local Validation (Lefthook + commitlint)
+
+**Install commitlint dependencies:**
+
+```bash
+npm install --save-dev @commitlint/cli @commitlint/config-conventional
+```
+
+**Create `commitlint.config.js`:**
+
+```javascript
+module.exports = {
+  extends: ["@commitlint/config-conventional"],
+  rules: {
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",     // New feature
+        "fix",      // Bug fix
+        "docs",     // Documentation changes
+        "style",    // Code style changes
+        "refactor", // Code refactoring
+        "perf",     // Performance improvements
+        "test",     // Adding or updating tests
+        "build",    // Build system changes
+        "ci",       // CI configuration changes
+        "chore",    // Other changes
+        "revert",   // Revert a previous commit
+      ],
+    ],
+    "subject-empty": [2, "never"],
+    "subject-full-stop": [2, "never", "."],
+    "subject-case": [1, "always", "lower-case"],
+    "body-leading-blank": [2, "always"],
+    "footer-leading-blank": [0, "always"], // Disabled (conflicts with some tools)
+  },
+};
+```
+
+**Add commit-msg hook to `lefthook.yml`:**
+
+```yaml
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+```
+
+**Result:** Invalid commits rejected immediately at creation time.
+
+**Example:**
+
+```bash
+$ git commit -m "added new feature"
+❌ Error: subject may not be empty
+❌ Error: type may not be empty
+
+$ git commit -m "feat: add new feature"
+✅ Success
+```
+
+**Note:** Can be bypassed locally with `git commit --no-verify`, but GitHub Actions
+will still catch invalid commits (cannot bypass remote validation).
+
+#### Layer 2: GitHub Actions - Validate All Commits in PR
+
+**Create `.github/workflows/validate-commits.yml`:**
+
+```yaml
+name: Validate Commits
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-commit-messages:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '22'
+
+      - name: Install commitlint
+        run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
+
+      - name: Validate current commit (push)
+        if: github.event_name == 'push'
+        run: npx commitlint --from HEAD~1 --to HEAD --verbose
+
+      - name: Validate PR commits (pull_request)
+        if: github.event_name == 'pull_request'
+        run: |
+          npx commitlint \
+            --from ${{ github.event.pull_request.base.sha }} \
+            --to ${{ github.event.pull_request.head.sha }} \
+            --verbose
+```
+
+**Result:** All commits in PR must follow Conventional Commits format.
+
+**Benefits:**
+- Cannot be bypassed (runs on GitHub's servers)
+- Validates ALL commits in the PR, not just the latest
+- Blocks PR merge if validation fails (when set as required check)
+- Same rules as local commitlint
+
+#### Layer 3: GitHub Actions - Validate PR Title
+
+**Create `.github/workflows/validate-pr-title.yml`:**
+
+```yaml
+name: Validate PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+  statuses: write
+
+jobs:
+  validate-pr-title:
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@0723387faaf9b38adef4775cd42cfd5155ed6017 # v5.5.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          requireScope: false
+          subjectPattern: ^.+$
+          validateSingleCommit: true
+          headerPattern: '^(\w+)(\(\w+\))?: (.+)$'
+```
+
+**Why validate PR title?**
+- When using squash merge, PR title becomes the commit message
+- Ensures squashed commit follows Conventional Commits
+- Prevents invalid commits in main branch history
+- Release Please can parse squashed commits correctly
+
+#### Enforcement Strategy
+
+**Multi-layer protection:**
+
+```
+┌─────────────────────────────────────────────────┐
+│ Developer creates commit                         │
+│   ↓                                              │
+│ Layer 1: Lefthook + commitlint (local)          │
+│   ├─ Valid → commit created ✅                   │
+│   └─ Invalid → rejected ❌                       │
+│     └─ Can bypass with --no-verify (not recommended) │
+│                                                   │
+│ Developer pushes to PR                           │
+│   ↓                                              │
+│ Layer 2: validate-commits.yml (GitHub Actions)  │
+│   ├─ All commits valid → check passes ✅         │
+│   └─ Any commit invalid → check fails ❌         │
+│     └─ Cannot bypass (blocks PR merge)           │
+│                                                   │
+│ Layer 3: validate-pr-title.yml (GitHub Actions) │
+│   ├─ PR title valid → check passes ✅            │
+│   └─ PR title invalid → check fails ❌           │
+│     └─ Cannot bypass (blocks PR merge)           │
+│                                                   │
+│ Both checks pass → PR can be merged              │
+│   ↓                                              │
+│ Release Please can parse commits ✅              │
+│ Changelog generated correctly ✅                 │
+│ Version bumped according to commit types ✅      │
+└─────────────────────────────────────────────────┘
+```
+
+### Configuration Synchronization
+
+**CRITICAL:** All three validation layers must use the same commit type list.
+
+**Files to keep in sync:**
+
+1. `commitlint.config.js` - local validation
+2. `.github/workflows/validate-pr-title.yml` - PR title validation
+
+**Example commit types (must match everywhere):**
+
+```
+feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+```
+
+**If they don't match:**
+- Local validation passes but GitHub Actions fails (or vice versa)
+- Confusing error messages for developers
+- Inconsistent enforcement
+
+### Branch Protection Setup
+
+**Make validation required** (prevents merging invalid PRs):
+
+1. Go to **Settings** → **Branches** → **Branch protection rules**
+2. Add rule for `master` branch:
+   - ✅ Require status checks to pass before merging
+   - ✅ Select required checks:
+     - `Validate Commit Messages`
+     - `Validate PR Title`
+   - ✅ Require branches to be up to date before merging
+
+**Result:** PRs cannot be merged unless all commits and PR title are valid.
+
+### Handling Invalid Commits
+
+#### If local commit is rejected:
+
+```bash
+# Fix the commit message
+git commit --amend -m "feat: add new feature"
+
+# Or create new commit with correct format
+git commit -m "fix: resolve authentication bug"
+```
+
+#### If PR validation fails:
+
+**Option 1: Amend commits (if you own the branch):**
+
+```bash
+# Rewrite last commit
+git commit --amend -m "feat: corrected commit message"
+git push --force
+
+# Rewrite multiple commits
+git rebase -i HEAD~3  # Interactive rebase last 3 commits
+# Edit commit messages in editor
+git push --force
+```
+
+**Option 2: Add fixup commit:**
+
+```bash
+# If you can't rewrite history, add a properly formatted commit
+git commit -m "chore: fix commit message formatting"
+git push
+```
+
+**Warning:** Rewriting history (`--force`) is safe on feature branches but
+dangerous on shared branches.
+
+### Common Validation Errors
+
+#### Error: "type may not be empty"
+
+```bash
+❌ git commit -m "added feature"
+✅ git commit -m "feat: add feature"
+```
+
+#### Error: "subject may not be empty"
+
+```bash
+❌ git commit -m "feat:"
+✅ git commit -m "feat: add user authentication"
+```
+
+#### Error: "subject must not be sentence-case, start-case, pascal-case, upper-case"
+
+```bash
+❌ git commit -m "feat: Add Feature"
+✅ git commit -m "feat: add feature"
+```
+
+#### Error: "type must be one of [feat, fix, ...]"
+
+```bash
+❌ git commit -m "feature: add login"
+✅ git commit -m "feat: add login"
+```
+
+### Footer-Leading-Blank Rule Adjustment
+
+**Issue:** Some tools (like Release Please, GitHub merge commits) generate commit
+messages without blank lines before footers, causing validation to fail.
+
+**Solution:** Disable `footer-leading-blank` rule:
+
+```diff
+# commitlint.config.js
+module.exports = {
+  extends: ["@commitlint/config-conventional"],
+  rules: {
+    "body-leading-blank": [2, "always"],
+-   "footer-leading-blank": [2, "always"],
++   "footer-leading-blank": [0, "always"], // Disabled
+  },
+};
+```
+
+**Example commit that now passes:**
+
+```
+feat: add new feature
+
+This is the body.
+Refs: #123
+```
+
+Without the adjustment, commitlint would require:
+
+```
+feat: add new feature
+
+This is the body.
+
+Refs: #123
+```
+
+### Related Changes
+
+- **PR #95**: `ci: enforce conventional commits with lefthook and github actions`
+- **PR #126**: `chore: disable footer-leading-blank commitlint rule`
+- **Commits**: `064b84b` (initial enforcement), `e3c5fec` (footer rule adjustment)
+
+### Benefits
+
+✅ **Release Please works correctly** - Can parse all commits, generate changelogs, bump versions
+✅ **Consistent commit history** - All commits follow the same format
+✅ **Automated releases** - Version bumps determined automatically from commit types
+✅ **Clear changelogs** - Organized by commit type (Features, Bug Fixes, etc.)
+✅ **Cannot be bypassed** - GitHub Actions validation is mandatory
+✅ **Immediate feedback** - Local hooks catch errors before pushing
+✅ **Team alignment** - Everyone follows the same commit conventions
+
+### Verification
+
+#### Test local validation:
+
+```bash
+# This should fail
+git commit -m "added feature"
+
+# This should succeed
+git commit -m "feat: add feature"
+```
+
+#### Test GitHub Actions validation:
+
+1. Create PR with invalid commit message
+2. Check "Validate Commits" workflow fails
+3. Amend commit to fix format
+4. Push again
+5. Verify workflow passes
+
+#### Test PR title validation:
+
+1. Create PR with title "Fixed bug"
+2. Check "Validate PR Title" fails
+3. Edit PR title to "fix: resolve authentication bug"
+4. Verify workflow passes
+
+### Troubleshooting
+
+#### Local validation passes but GitHub Actions fails:
+
+- Check that `commitlint.config.js` matches `.github/workflows/validate-commits.yml`
+- Ensure commitlint is using same config in both places
+- Verify npm dependencies are up to date
+
+#### All commits valid but validation still fails:
+
+- Check for merge commits (these often have non-standard format)
+- Verify fetch-depth: 0 in checkout action (needed to see all commits)
+- Look at GitHub Actions logs for specific failing commit SHA
+
+#### Want to temporarily disable validation:
+
+**Local:**
+```bash
+git commit -m "WIP: temporary work" --no-verify
+```
+
+**GitHub Actions:**
+- Don't do this - defeats the purpose
+- If absolutely necessary, remove workflows temporarily (not recommended)
 
 ---
 
