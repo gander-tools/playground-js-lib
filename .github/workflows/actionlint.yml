@@ -21,11 +21,20 @@ jobs:
             -   name: Checkout code
                 uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
-            -   name: Download actionlint
-                id: get_actionlint
-                run: |
-                    bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-                    echo "actionlint_path=${PWD}/actionlint" >> "$GITHUB_OUTPUT"
-
             -   name: Run actionlint
-                run: ${{ steps.get_actionlint.outputs.actionlint_path }} -color
+                id: actionlint
+                uses: raven-actions/actionlint@3a24062651993d40fed1019b58ac6fbdfbf276cc # v2.0.1
+                with:
+                    fail-on-error: true
+
+            -   name: actionlint Summary
+                if: ${{ steps.actionlint.outputs.exit-code != 0 }}
+                run: |
+                    echo "Used actionlint version ${{ steps.actionlint.outputs.version-semver }}"
+                    echo "Used actionlint release ${{ steps.actionlint.outputs.version-tag }}"
+                    echo "actionlint ended with ${{ steps.actionlint.outputs.exit-code }} exit code"
+                    echo "actionlint ended because '${{ steps.actionlint.outputs.exit-message }}'"
+                    echo "actionlint found ${{ steps.actionlint.outputs.total-errors }} errors"
+                    echo "actionlint checked ${{ steps.actionlint.outputs.total-files }} files"
+                    echo "actionlint cache used: ${{ steps.actionlint.outputs.cache-hit }}"
+                    exit ${{ steps.actionlint.outputs.exit-code }}
