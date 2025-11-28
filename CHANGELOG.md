@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.10.9](https://github.com/gander-tools/playground-js-lib/compare/v0.10.8...v0.10.9) (2025-11-28)
+
+
+### Features
+
+* add actionlint workflow for github actions validation ([05133e5](https://github.com/gander-tools/playground-js-lib/commit/05133e512357d361a013771d54e2d550a78ca4c2))
+* add codecov for code coverage reporting ([ed5b73e](https://github.com/gander-tools/playground-js-lib/commit/ed5b73ecde84a8877b48826a01f313c047ebac1f))
+* add codeql security scanning workflow ([da0a48f](https://github.com/gander-tools/playground-js-lib/commit/da0a48fd0376428f99c05e609c62e01f8a4d68f3))
+* add dependency review for vulnerability detection ([9dc9e9f](https://github.com/gander-tools/playground-js-lib/commit/9dc9e9f9d42e23a551d54c5529f90b5196d81de9))
+* add gitleaks for automated secrets detection ([467d8f7](https://github.com/gander-tools/playground-js-lib/commit/467d8f7d783aa6ebee710451b37d64a76b5b84e5))
+* add markdownlint for markdown file validation ([195c419](https://github.com/gander-tools/playground-js-lib/commit/195c4193f8e035c12656e59d478df0392f8e58cb))
+* add openssf scorecard for supply chain security ([5bcb1f7](https://github.com/gander-tools/playground-js-lib/commit/5bcb1f77f2597414904e0593d1bddd164990c4cc))
+* add sbom generation for supply chain transparency ([01d40df](https://github.com/gander-tools/playground-js-lib/commit/01d40dfe38629c94c27e6bc668e51f023c6d3b41))
+* add semgrep for advanced static security analysis ([4a311ac](https://github.com/gander-tools/playground-js-lib/commit/4a311ac313cb0acf0a64d7b22f4c435fda1f606e))
+* add step-security/harden-runner to critical workflows ([a06cbf9](https://github.com/gander-tools/playground-js-lib/commit/a06cbf9f4d9a8e47a6421da33c7b1eef8179184f))
+* add trivy for comprehensive vulnerability scanning ([4c750e0](https://github.com/gander-tools/playground-js-lib/commit/4c750e06ca2c1c1931b77e2d86d6f0ad75014dbf))
+
+
+### Bug Fixes
+
+* enable actionlint to block ci on workflow errors ([96f4562](https://github.com/gander-tools/playground-js-lib/commit/96f456262637082d1dccbb15d90853ad9d383c75))
+* group output redirects to resolve shellcheck sc2129 ([a606bc6](https://github.com/gander-tools/playground-js-lib/commit/a606bc65f540837bc8c23521cce0adef21762345))
+* make actionlint non-blocking for pre-existing shellcheck issues ([a94bf86](https://github.com/gander-tools/playground-js-lib/commit/a94bf86269da9d4df8d7001a7db968922e549a29))
+* relax markdownlint rules for existing markdown files ([9d69eff](https://github.com/gander-tools/playground-js-lib/commit/9d69eff048c270f3d45f723f823a220f8d86badc))
+* remove codeql workflow conflicting with default setup ([61b9e8c](https://github.com/gander-tools/playground-js-lib/commit/61b9e8c7ba8a5d059c0d360a4a086f14dcf2c1d1))
+* remove gitleaks workflow ([14886ac](https://github.com/gander-tools/playground-js-lib/commit/14886acda58427215e3f2fd50a12278b0b2548ff))
+* remove semgrep workflow due to sarif generation issues ([e9c5f0a](https://github.com/gander-tools/playground-js-lib/commit/e9c5f0a661e2cea64ae802429ba829bcb8b6c975))
+* remove trivy workflow due to nested action sha pinning issues ([ce5d450](https://github.com/gander-tools/playground-js-lib/commit/ce5d450e580dfa73db99bde84f8613eacd9fe5aa))
+* replace invalid sha references with version tags ([1a5a027](https://github.com/gander-tools/playground-js-lib/commit/1a5a027412cb16ebf781f7864be1a5cad02e9662))
+* resolve all shellcheck issues in workflow files ([2f1e78a](https://github.com/gander-tools/playground-js-lib/commit/2f1e78a88cc59848462854bebf7e8c11e0e7638a))
+* update all actions to use valid commit sha pinning ([d75b330](https://github.com/gander-tools/playground-js-lib/commit/d75b3300c300917d72c683262d2eb6c2296c1793))
+* update gitleaks action to valid sha reference ([77718ef](https://github.com/gander-tools/playground-js-lib/commit/77718efab72ef4a604e89e9703442bfa0e3fe40a))
+* use npm instead of bun in lefthook pre-commit hook ([69a4bf6](https://github.com/gander-tools/playground-js-lib/commit/69a4bf6a0374375deed60ec083b358b9cb3e650c))
+* use npm instead of bun in lefthook pre-commit hook ([#127](https://github.com/gander-tools/playground-js-lib/issues/127)) ([9b3dd2b](https://github.com/gander-tools/playground-js-lib/commit/9b3dd2bbe788dbc660fa4b149cac247cba204f15))
+
 ## [0.10.8](https://github.com/gander-tools/playground-js-lib/compare/v0.10.7...v0.10.8) (2025-11-28)
 
 
