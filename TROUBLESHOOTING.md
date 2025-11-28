@@ -8,6 +8,16 @@ This document contains solutions to common problems encountered in this project.
 - [Missing Dependencies and Code Formatting Issues](#missing-dependencies-and-code-formatting-issues)
 - [Conventional Commits Not Enforced](#conventional-commits-not-enforced)
 - [npm Publish Failures with Trusted Publishers](#npm-publish-failures-with-trusted-publishers)
+- [Lefthook Pre-Commit Hook Failures](#lefthook-pre-commit-hook-failures)
+- [GitHub Actions SHA Pinning Issues](#github-actions-sha-pinning-issues)
+- [Security Scanning Workflow Conflicts](#security-scanning-workflow-conflicts)
+- [Release Please Configuration Issues](#release-please-configuration-issues)
+- [jsr.json Formatting Blocking Releases](#jsrjson-formatting-blocking-releases)
+- [Format-Files Job Not Running](#format-files-job-not-running)
+- [Automerge Accidentally Merging Release PRs](#automerge-accidentally-merging-release-prs)
+- [Shellcheck Errors in Workflows](#shellcheck-errors-in-workflows)
+- [Markdownlint Blocking CI](#markdownlint-blocking-ci)
+- [Release Please Merge Commit Parsing](#release-please-merge-commit-parsing)
 
 ---
 
