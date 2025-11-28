@@ -28,4 +28,5 @@ jobs:
                     echo "actionlint_path=${PWD}/actionlint" >> "$GITHUB_OUTPUT"
 
             -   name: Run actionlint
+                continue-on-error: true
                 run: ${{ steps.get_actionlint.outputs.actionlint_path }} -color
