@@ -27,7 +27,7 @@ module.exports = {
         "subject-case": [1, "always", "lower-case"],
         // Body should have a blank line before it
         "body-leading-blank": [2, "always"],
-        // Footer should have a blank line before it
-        "footer-leading-blank": [2, "always"],
+        // Footer should have a blank line before it (disabled)
+        "footer-leading-blank": [0, "always"],
     },
 };
