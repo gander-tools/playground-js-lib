@@ -22,7 +22,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
+                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check:fix",
                         "timeout": 120
                     }
                 ]

@@ -188,8 +188,9 @@ Configured in `.claude/settings.json` for automated development environment:
 - Runs `npm install` on session start (timeout: 300s)
 
 **PostToolUse Hook:**
-- Runs `npm run check` after Write/Edit operations (timeout: 120s)
-- Provides immediate code quality feedback
+- Runs `npm run check:fix` after Write/Edit operations (timeout: 120s)
+- Automatically fixes formatting and linting issues
+- Prevents commit failures from style violations
 
 **Local customization**: Create `.claude/settings.local.json` for overrides (not version-controlled)
 
@@ -337,7 +338,7 @@ npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of in
 - Learning/experimental project - suggest improvements freely
 - Use `npm` (not `bun`) for all commands in Claude Code
 - **ALWAYS use `npm install` (NEVER `npm ci`)** - project does not maintain lock files
-- Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check`
+- Claude Code hooks: SessionStart runs `npm install`, PostToolUse runs `npm run check:fix`
 - Always run `npm run check:fix` + `npm run typecheck` before committing
 - Maintain Node 20+/22+ compatibility
 - Keep CJS/ESM dual exports working

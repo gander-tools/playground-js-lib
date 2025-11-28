@@ -64,13 +64,18 @@ Comprehensive solutions to problems encountered in this project, organized by ca
       "matcher": "Write|Edit",
       "hooks": [{
         "type": "command",
-        "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check",
+        "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run check:fix",
         "timeout": 120
       }]
     }]
   }
 }
 ```
+
+**Why `check:fix` instead of `check`:**
+- `check` - only reports errors (no auto-fix)
+- `check:fix` - automatically fixes formatting/lint issues
+- PostToolUse should auto-fix to prevent commit failures
 
 **File**: `.gitignore`
 
@@ -79,9 +84,14 @@ Comprehensive solutions to problems encountered in this project, organized by ca
 ```
 
 ### Works With
-- **Biome** - `npm run check` runs linting + formatting
+- **Biome** - `npm run check:fix` auto-fixes linting + formatting
 - **Lefthook** - Pre-commit hook validates same rules
 - **TypeScript** - Can run `npm run typecheck` in PostToolUse
+
+### Command Comparison
+- **SessionStart**: `npm install` - installs dependencies
+- **PostToolUse**: `npm run check:fix` - auto-fixes code issues
+- **Pre-commit**: `npm run check` - validates only (no auto-fix)
 
 ### Workflow Triggers
 - **SessionStart**: On Claude Code session initialization
@@ -139,6 +149,36 @@ commit-msg:
   }
 }
 ```
+
+### ⚠️ CRITICAL: npm ci vs npm install in CI/CD
+
+**The Problem:**
+The `prepare` script lifecycle hook is **NOT executed** by `npm ci`, only by `npm install`.
+
+**Why this matters:**
+- `npm ci` - skips ALL lifecycle scripts (including `prepare`) for security and speed
+- `npm install` - runs lifecycle scripts including `prepare`
+- Without `prepare` script, lefthook hooks won't be installed automatically
+
+**Impact on this project:**
+This project **does NOT maintain lock files** (`package-lock.json`), therefore:
+- ✅ **MUST use `npm install`** in CI/CD (not `npm ci`)
+- ✅ `npm install` runs `prepare` script → installs lefthook hooks
+- ❌ `npm ci` would fail anyway (requires lock file to exist)
+
+**For projects WITH lock files:**
+If using `npm ci` in CI/CD, you must manually install lefthook:
+```yaml
+# GitHub Actions example
+- run: npm ci
+- run: npx lefthook install  # Manual install required!
+- run: npm test
+```
+
+**Why `prepare` is the right choice:**
+- Runs after `npm install` and before `npm publish`
+- Perfect for installing git hooks in development
+- Alternative: `postinstall` (runs in CI too, which may not be desired)
 
 ### Works With
 - **Commitlint** - Validates commit messages
