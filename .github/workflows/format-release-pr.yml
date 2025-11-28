@@ -13,7 +13,7 @@ permissions:
 jobs:
   format-files:
     # Only run on Release Please PRs
-    if: ${{ startsWith(github.head_ref, 'release-please--') || contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}
+    if: ${{ startsWith(github.head_ref, 'release-please--') }}
     runs-on: ubuntu-latest
 
     steps:
