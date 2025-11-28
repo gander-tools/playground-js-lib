@@ -1,0 +1,43 @@
+name: Code Coverage
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    coverage:
+        name: Upload Coverage
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Harden Runner
+                uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+                with:
+                    disable-sudo: true
+                    egress-policy: audit
+
+            -   name: Checkout code
+                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+            -   name: Setup Node.js
+                uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+                with:
+                    node-version: "22"
+
+            -   name: Install dependencies
+                run: npm install
+
+            -   name: Run tests with coverage
+                run: npm run test:coverage
+
+            -   name: Upload coverage to Codecov
+                uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+                with:
+                    files: ./coverage/coverage-final.json
+                    fail_ci_if_error: false
+                    verbose: true

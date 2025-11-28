@@ -37,7 +37,7 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
+          git diff --exit-code || echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push formatted files
         if: steps.git-check.outputs.has_changes == 'true'

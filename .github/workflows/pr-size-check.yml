@@ -26,34 +26,48 @@ jobs:
                     HEAD_SHA=${{ github.event.pull_request.head.sha }}
 
                     # Get file changes
-                    FILES_CHANGED=$(git diff --name-only $BASE_SHA..$HEAD_SHA | wc -l)
-                    ADDITIONS=$(git diff --numstat $BASE_SHA..$HEAD_SHA | awk '{sum+=$1} END {print sum}')
-                    DELETIONS=$(git diff --numstat $BASE_SHA..$HEAD_SHA | awk '{sum+=$2} END {print sum}')
+                    FILES_CHANGED=$(git diff --name-only "$BASE_SHA".."$HEAD_SHA" | wc -l)
+                    ADDITIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$1} END {print sum}')
+                    DELETIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$2} END {print sum}')
 
-                    echo "files_changed=$FILES_CHANGED" >> $GITHUB_OUTPUT
-                    echo "additions=$ADDITIONS" >> $GITHUB_OUTPUT
-                    echo "deletions=$DELETIONS" >> $GITHUB_OUTPUT
+                    {
+                        echo "files_changed=$FILES_CHANGED"
+                        echo "additions=$ADDITIONS"
+                        echo "deletions=$DELETIONS"
+                    } >> "$GITHUB_OUTPUT"
 
             -   name: Determine PR size
                 id: size
                 run: |
-                    TOTAL=$(($(echo "${{ steps.stats.outputs.additions }}" | sed 's/^$/0/') + $(echo "${{ steps.stats.outputs.deletions }}" | sed 's/^$/0/')))
+                    ADDITIONS="${{ steps.stats.outputs.additions }}"
+                    DELETIONS="${{ steps.stats.outputs.deletions }}"
+                    TOTAL=$((${ADDITIONS:-0} + ${DELETIONS:-0}))
 
-                    if [ $TOTAL -lt 100 ]; then
-                        echo "size=🟢 XS" >> $GITHUB_OUTPUT
-                        echo "color=success" >> $GITHUB_OUTPUT
-                    elif [ $TOTAL -lt 300 ]; then
-                        echo "size=🟢 Small" >> $GITHUB_OUTPUT
-                        echo "color=success" >> $GITHUB_OUTPUT
-                    elif [ $TOTAL -lt 500 ]; then
-                        echo "size=🟡 Medium" >> $GITHUB_OUTPUT
-                        echo "color=warning" >> $GITHUB_OUTPUT
-                    elif [ $TOTAL -lt 1000 ]; then
-                        echo "size=🟠 Large" >> $GITHUB_OUTPUT
-                        echo "color=warning" >> $GITHUB_OUTPUT
+                    if [ "$TOTAL" -lt 100 ]; then
+                        {
+                            echo "size=🟢 XS"
+                            echo "color=success"
+                        } >> "$GITHUB_OUTPUT"
+                    elif [ "$TOTAL" -lt 300 ]; then
+                        {
+                            echo "size=🟢 Small"
+                            echo "color=success"
+                        } >> "$GITHUB_OUTPUT"
+                    elif [ "$TOTAL" -lt 500 ]; then
+                        {
+                            echo "size=🟡 Medium"
+                            echo "color=warning"
+                        } >> "$GITHUB_OUTPUT"
+                    elif [ "$TOTAL" -lt 1000 ]; then
+                        {
+                            echo "size=🟠 Large"
+                            echo "color=warning"
+                        } >> "$GITHUB_OUTPUT"
                     else
-                        echo "size=🔴 XL" >> $GITHUB_OUTPUT
-                        echo "color=important" >> $GITHUB_OUTPUT
+                        {
+                            echo "size=🔴 XL"
+                            echo "color=important"
+                        } >> "$GITHUB_OUTPUT"
                     fi
 
             -   name: Add sticky comment

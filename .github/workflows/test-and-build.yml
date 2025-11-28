@@ -56,6 +56,12 @@ jobs:
             needs.changes.outputs.config == 'true' ||
             github.event_name == 'push'
         steps:
+            -   name: Harden Runner
+                uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+                with:
+                    disable-sudo: true
+                    egress-policy: audit
+
             -   name: Checkout code
                 uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 

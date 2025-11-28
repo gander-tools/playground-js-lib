@@ -33,7 +33,7 @@ jobs:
                 run: |
                     # Extract coverage summary from vitest output
                     COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null || echo '{"total":{"lines":{"pct":0},"statements":{"pct":0},"functions":{"pct":0},"branches":{"pct":0}}}')
-                    echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+                    echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
 
             -   name: Comment PR with coverage
                 uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
