@@ -255,6 +255,38 @@ Configure `master` branch to require passing `Test & Build` check before merging
 - No secrets needed in GitHub repository settings
 - Publishes only from `master` branch via `release-please.yml` workflow
 
+**⚠️ CRITICAL: npm Version Requirement**
+
+npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of initial publishing failures (fixed in PR #115).
+
+**The Problem:**
+- Node.js 22 ships with npm < 11.5.1 by default
+- Older npm versions don't support OIDC-based Trusted Publishers
+- Even with correct `id-token: write` and `--provenance` flags, publishing silently fails
+
+**The Solution:**
+```yaml
+- name: Install latest npm
+  run: npm install -g npm@11.5.1
+
+- name: Verify npm >= 11.5.1 for Trusted Publishers
+  run: |
+    CURRENT_NPM=$(npm --version)
+    if [ "$(printf '%s\n' "11.5.1" "$CURRENT_NPM" | sort -V | head -n1)" = "11.5.1" ]; then
+      echo "✓ npm version $CURRENT_NPM is sufficient (>= 11.5.1)"
+    else
+      echo "❌ Error: npm version $CURRENT_NPM is too old"
+      exit 1
+    fi
+```
+
+**Additional fixes applied:**
+- Removed `registry-url` from `setup-node` (causes deprecated `always-auth=true` warnings in npm 11+)
+- Removed `scope` and `always-auth` parameters (not needed with OIDC)
+- Upgraded to Node 22 and actions v6 for better compatibility
+
+**See:** [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed problem analysis and solution.
+
 **⚠️ Common Trusted Publisher issues:**
 - **Workflow filename must match EXACTLY** - npm checks `.github/workflows/release-please.yml` path
 - **Repository owner/name must match** - verify `gander-tools/playground-js-lib` on npmjs.com
