@@ -1,0 +1,31 @@
+name: Dependency Review
+
+on:
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    dependency-review:
+        name: Review Dependencies
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
+
+        steps:
+            -   name: Harden Runner
+                uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+                with:
+                    disable-sudo: true
+                    egress-policy: audit
+
+            -   name: Checkout code
+                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+            -   name: Dependency Review
+                uses: actions/dependency-review-action@a4062f65cf9f00a7bb6e19bf4cccdc97028cb04c # v4.6.0
+                with:
+                    fail-on-severity: moderate
+                    comment-summary-in-pr: always
