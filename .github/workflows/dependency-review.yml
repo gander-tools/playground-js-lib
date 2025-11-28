@@ -25,7 +25,7 @@ jobs:
                 uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
             -   name: Dependency Review
-                uses: actions/dependency-review-action@a4062f65cf9f00a7bb6e19bf4cccdc97028cb04c # v4.6.0
+                uses: actions/dependency-review-action@v4
                 with:
                     fail-on-severity: moderate
                     comment-summary-in-pr: always

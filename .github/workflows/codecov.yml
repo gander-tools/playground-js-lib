@@ -36,7 +36,7 @@ jobs:
                 run: npm run test:coverage
 
             -   name: Upload coverage to Codecov
-                uses: codecov/codecov-action@7f8b4b4bde536c465e797be725718b88c5d95e0e # v5.2.1
+                uses: codecov/codecov-action@v5
                 with:
                     files: ./coverage/coverage-final.json
                     fail_ci_if_error: false

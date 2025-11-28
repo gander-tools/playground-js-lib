@@ -31,7 +31,7 @@ jobs:
                 uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
             -   name: Run Semgrep
-                uses: returntocorp/semgrep-action@98aaa00bd90e79ae9afa23b5c1e6d7313e0481fb # v1.102.0
+                uses: returntocorp/semgrep-action@v1
                 with:
                     config: >-
                         p/security-audit
@@ -40,7 +40,7 @@ jobs:
                     generateSarif: true
 
             -   name: Upload SARIF results
-                uses: github/codeql-action/upload-sarif@df409f7d9260372bd5f19e5b04e83cb3c43714ae # v3.27.9
+                uses: github/codeql-action/upload-sarif@v3
                 if: always()
                 with:
                     sarif_file: semgrep.sarif
