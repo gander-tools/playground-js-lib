@@ -41,6 +41,7 @@
         "lint:fix": "biome lint --write",
         "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
         "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
+        "prepare": "lefthook install",
         "prepack": "pkgroll --clean-dist --sourcemap --minify",
         "publint": "publint --pack auto",
         "release": "release-it --only-version",

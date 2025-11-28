@@ -28,7 +28,7 @@ jobs:
                     node-version: '22'
 
             -   name: Install commitlint
-                run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
+                run: npm install --ignore-scripts --save-dev @commitlint/cli @commitlint/config-conventional
 
             -   name: Validate current commit (push)
                 if: github.event_name == 'push'
