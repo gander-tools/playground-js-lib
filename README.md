@@ -12,15 +12,16 @@ bun run test
 ## Documentation
 
 - **[CLAUDE.md](./CLAUDE.md)** - Project overview, tech stack, and development workflow
-- **[RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md)** - Release management workflow for maintainers
-- **[.github/MERGE_COMMIT_SETUP.md](.github/MERGE_COMMIT_SETUP.md)** - Fix Release Please merge commit parsing errors
+- **[SEMANTIC_RELEASE_GUIDE.md](./SEMANTIC_RELEASE_GUIDE.md)** - Automated release workflow for maintainers
+- **[.github/MERGE_COMMIT_SETUP.md](.github/MERGE_COMMIT_SETUP.md)** - GitHub merge commit configuration
 
 ## For Maintainers
 
-This project uses Release Please for automated releases. See the [Maintainer Guide](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for:
-- Daily workflow with conventional commits
-- How to manage Release PRs
-- Version control strategies
+This project uses semantic-release for automated per-commit releases. See the [Semantic Release Guide](./SEMANTIC_RELEASE_GUIDE.md) for:
+- How semantic-release works (per-commit vs batched releases)
+- Conventional commit types and version bumps
+- Skipping releases
 - Troubleshooting common issues
+- npm Trusted Publishers configuration
 
-**⚠️ Important Setup:** Configure GitHub merge settings to avoid Release Please parsing errors. See [MERGE_COMMIT_SETUP.md](.github/MERGE_COMMIT_SETUP.md).
+**⚠️ Important:** Every qualifying commit to `master` triggers an immediate release. Use appropriate commit types (`docs:`, `chore:`, etc.) to avoid unnecessary releases.

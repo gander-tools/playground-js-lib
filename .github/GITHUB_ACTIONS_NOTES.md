@@ -47,31 +47,37 @@ This repository uses the following GitHub Actions to automate workflows:
 - **Example**: `.github/workflows/pr-size-check.yml`
 - **Use case**: PR size metrics, continuous status updates
 
-## Actions NOT Implemented
+## Release Automation
 
-### semantic-release/changelog
-**Status**: ❌ Not implemented
+### semantic-release
+**Status**: ✅ Implemented
 
-**Reason**: `semantic-release/changelog` is NOT a GitHub Action. It's a plugin for the `semantic-release` npm package used for semantic versioning and changelog generation.
+**Implementation**: This project uses **semantic-release** for automated per-commit releases. semantic-release is run directly via `npx semantic-release` in the workflow (not using a GitHub Action wrapper).
 
-**Incompatibility**: This project uses **Release Please** (Google's release automation tool) instead of `semantic-release`. Release Please handles:
+**Features**:
 - Automated version bumping based on Conventional Commits
 - Changelog generation from commit messages
 - GitHub releases and tags
-- npm/JSR publishing
+- npm publishing with Trusted Publishers (OIDC)
+- JSR publishing
 
-**Migration path**: If you want to switch from Release Please to semantic-release:
-1. Remove `.github/workflows/release-please.yml`
-2. Remove `release-please-config.json` and `.release-please-manifest.json`
-3. Install semantic-release: `npm install --save-dev semantic-release @semantic-release/changelog @semantic-release/git`
-4. Create `.releaserc.json` configuration
-5. Create new GitHub Actions workflow using `cycjimmy/semantic-release-action`
+**Configuration**:
+- `.releaserc.json` - semantic-release configuration
+- `.github/workflows/semantic-release.yml` - GitHub Actions workflow
+- Runs on every push to `master` branch
+- Publishes immediately for qualifying commits (`feat:`, `fix:`, `perf:`, `refactor:`)
 
-**Recommendation**: Continue using Release Please. It's:
-- Already configured and working
-- Specifically designed for monorepos and multi-package projects
-- More GitHub-centric (creates Release PRs for review before publishing)
-- Easier to configure than semantic-release
+**Migration from Release Please**: Completed
+- ✅ Removed `.github/workflows/release-please.yml`
+- ✅ Removed `release-please-config.json` and `.release-please-manifest.json`
+- ✅ Installed semantic-release and plugins
+- ✅ Created `.releaserc.json` configuration
+- ✅ Updated documentation
+
+**Key differences from Release Please**:
+- **Per-commit releases** vs batched release PRs
+- **Immediate publishing** vs manual PR merge approval
+- **More automated** vs more control
 
 ## Version Pinning Strategy
 
