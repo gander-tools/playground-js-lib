@@ -13,20 +13,23 @@ This repository **strictly enforces** [Conventional Commits](https://www.convent
 ### Why This Matters
 
 Conventional Commits enable:
-- **Automated releases** via Release Please (analyzes commits → determines version → publishes)
+- **Automated releases** via semantic-release (analyzes commits → determines version → publishes immediately)
 - **Automatic changelog generation** organized by commit type
 - **Semantic versioning control** (different commit types = different version bumps)
 - **Clear project history** for reviews and maintenance
 
 ### Allowed Commit Types
 
+**Types that trigger releases:**
 - `feat:` - New feature (→ **patch bump** in pre-1.0, e.g., 0.8.0 → 0.8.1)
 - `fix:` - Bug fix (→ **patch bump**)
+- `perf:` - Performance improvements (→ **patch bump**)
+- `refactor:` - Code refactoring (→ **patch bump**)
 - `feat!:` or `BREAKING CHANGE:` - Breaking change (→ **minor bump** in pre-1.0, e.g., 0.8.0 → 0.9.0)
+
+**Types that do NOT trigger releases:**
 - `docs:` - Documentation only
 - `style:` - Code style/formatting (no logic changes)
-- `refactor:` - Code refactoring
-- `perf:` - Performance improvements
 - `test:` - Test changes
 - `build:` - Build system/dependencies
 - `ci:` - CI configuration
@@ -75,27 +78,24 @@ Conventional Commits enable:
 ### Version Bump Strategy
 
 **Pre-1.0 (current):**
-- `feat:` → patch (0.10.2 → 0.10.3)
-- `fix:` → patch (0.10.2 → 0.10.3)
-- `feat!:` → minor (0.10.2 → 0.11.0)
-- Major (1.0.0) requires manual edit of `.release-please-manifest.json`
+- `feat:`, `fix:`, `perf:`, `refactor:` → patch (0.10.2 → 0.10.3)
+- `feat!:` or `BREAKING CHANGE:` → minor (0.10.2 → 0.11.0)
+- Major (1.0.0) requires manual package.json edit
 
-**Configuration**: `bump-minor-pre-major` + `bump-patch-for-minor-pre-major` in `release-please-config.json`
+**Configuration**: See `.releaserc.json` for release rules
 
-### ⚠️ GitHub Merge Commit Configuration Required
+### ⚠️ GitHub Merge Strategy Recommendation
 
-**Issue:** GitHub's default merge commit format (`Merge pull request #102 from...`) does not follow Conventional Commits, causing Release Please parsing errors.
+**Recommended:** Use "Squash and merge" strategy for all PRs:
+- PR title becomes the commit message (already validated by CI)
+- Cleaner git history with one commit per feature/fix
+- semantic-release triggers on the squashed commit
+- Eliminates merge commits
 
-**Solution:** Configure GitHub repository settings to include PR titles in merge commits:
-
+**Alternative:** If using merge commits:
 1. Go to **Settings** → **General** → **Pull Requests**
 2. Under "Allow merge commits", set default to **"pull request title"**
 3. This changes merge commits from `Merge pull request #102...` to `feat: description (#102)`
-
-**Alternative:** Use "Squash and merge" strategy (recommended for most PRs):
-- Eliminates merge commits entirely
-- PR title becomes the commit message (already validated)
-- Cleaner git history
 
 **See:** [`.github/MERGE_COMMIT_SETUP.md`](.github/MERGE_COMMIT_SETUP.md) for detailed setup instructions.
 
@@ -106,7 +106,7 @@ Conventional Commits enable:
 - **Testing**: Vitest with coverage
 - **Linting**: Biome 1.9 (lint + format)
 - **Git Hooks**: Lefthook (pre-commit + commit-msg)
-- **Releases**: Release Please (GitHub Actions)
+- **Releases**: semantic-release (automated per-commit releases)
 - **Optional**: Vue 3 Reactivity API
 
 ## Available Scripts
@@ -165,8 +165,7 @@ npm install  # Runs prepare script → installs lefthook
 4. Run `npm run test:run` (verify tests pass)
 5. **Commit with Conventional Commits format** (e.g., `feat: add feature`)
 6. Push to branch → GitHub validates commits
-7. Merge to `main` → Release Please creates release PR
-8. Merge release PR → Auto-publish to npm/JSR
+7. Merge to `master` → semantic-release analyzes commit, publishes immediately to npm/JSR if it triggers a release
 
 ## Project Structure
 
@@ -178,8 +177,8 @@ npm install  # Runs prepare script → installs lefthook
 ├── commitlint.config.js      # Commit validation rules
 ├── lefthook.yml              # Git hooks (pre-commit + commit-msg)
 ├── biome.json                # Linter/formatter config
-├── release-please-config.json # Release automation config
-└── .release-please-manifest.json # Version tracking
+├── .releaserc.json           # semantic-release configuration
+└── CHANGELOG.md              # Auto-generated changelog
 ```
 
 ## Git Hooks (Lefthook)
@@ -208,7 +207,7 @@ Configured in `.claude/settings.json` for automated development environment:
 
 **Workflows:**
 - `test-and-build.yml` - Tests, typecheck, lint, build validation (runs on all PRs)
-- `release-please.yml` - Automated releases
+- `semantic-release.yml` - Automated per-commit releases
 - `validate-commits.yml` - Validates commit messages (**required check**)
 - `validate-pr-title.yml` - Validates PR titles (**required check**)
 
@@ -221,11 +220,10 @@ All actions MUST use SHA-pinned versions for security:
 **Standard Actions:**
 - `actions/checkout`: `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` (v6.0.0)
 - `actions/setup-node`: `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` (v6.0.0)
-- `googleapis/release-please-action`: `16a9c90856f42705d54a6fda1823352bdc62cf38` (v4.4.0)
 - `amannn/action-semantic-pull-request`: `0723387faaf9b38adef4775cd42cfd5155ed6017` (v5.5.3)
 
 **Branch Protection (Recommended):**
-Configure `master` branch to require passing `Test & Build` check before merging. This prevents Release Please PRs with failing tests/linting from being merged and blocking releases.
+Configure `master` branch to require passing `Test & Build` check before merging. This ensures all merges have passing tests/linting before semantic-release attempts to publish.
 
 ## NPM Publishing (Trusted Publishers)
 
@@ -239,7 +237,7 @@ Configure `master` branch to require passing `Test & Build` check before merging
 **Configuration:**
 1. **On npmjs.com:** Configure trusted publisher for `@gander-tools/playground`:
    - Package Settings → Publishing Access → Trusted Publishers
-   - Add: `gander-tools/playground-js-lib` repository, workflow `release-please.yml`
+   - Add: `gander-tools/playground-js-lib` repository, workflow `semantic-release.yml`
 
 2. **In workflow:** Already configured correctly:
    ```yaml
@@ -264,7 +262,7 @@ Configure `master` branch to require passing `Test & Build` check before merging
 - **DO NOT use `registry-url`** in setup-node (causes deprecated warnings)
 - **DO NOT use `always-auth`** or `scope`** (not needed with OIDC)
 - No secrets needed in GitHub repository settings
-- Publishes only from `master` branch via `release-please.yml` workflow
+- Publishes only from `master` branch via `semantic-release.yml` workflow
 
 **⚠️ CRITICAL: npm Version Requirement**
 
@@ -299,40 +297,36 @@ npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of in
 **See:** [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed problem analysis and solution.
 
 **⚠️ Common Trusted Publisher issues:**
-- **Workflow filename must match EXACTLY** - npm checks `.github/workflows/release-please.yml` path
+- **Workflow filename must match EXACTLY** - npm checks `.github/workflows/semantic-release.yml` path
 - **Repository owner/name must match** - verify `gander-tools/playground-js-lib` on npmjs.com
 - **Environment name** - if set in trusted publisher config, must match workflow's `environment:` setting
 - **Branch restrictions** - if configured, publish only works from specified branches
 
-## Release Process (Release Please)
+## Release Process (semantic-release)
 
-**Fully automated** via GitHub Actions. See [RELEASE_PLEASE_MAINTAINER_GUIDE.md](./RELEASE_PLEASE_MAINTAINER_GUIDE.md) for detailed instructions.
+**Fully automated per-commit releases** via GitHub Actions. See [SEMANTIC_RELEASE_GUIDE.md](./SEMANTIC_RELEASE_GUIDE.md) for detailed instructions.
 
 **How it works:**
-1. Merge commits to `main` with Conventional Commits format
-2. Release Please analyzes commits → creates/updates Release PR with changelog
-3. Merge Release PR → auto-publishes to npm/JSR + creates GitHub release
+1. Push commits to `master` with Conventional Commits format
+2. semantic-release analyzes commits → determines version bump → publishes immediately
+3. Updates CHANGELOG.md, creates GitHub release, publishes to npm/JSR
 
 **Key config files:**
-- `release-please-config.json` - Configuration (version bump rules)
-- `.release-please-manifest.json` - Current version tracking
+- `.releaserc.json` - Configuration (release rules, plugins)
+- `package.json` - Version number (updated automatically)
+- `jsr.json` - Version number (updated automatically)
 
 **Version control:**
-- To bump to specific version: Edit `.release-please-manifest.json` manually
-- Commit changes: `git commit -m "chore: prepare for version X.Y.Z"`
-- Release Please uses new version as baseline
+- Version is determined automatically from commit messages
+- To manually bump: Edit `package.json` version and commit with `chore:` type
 
-**Rejecting aggressive version bump:**
-1. Close the Release PR on GitHub
-2. Remove `autorelease: pending` label
-3. Update `release-please-config.json` with version controls
-4. Push new commit → Release Please creates fresh PR
+**Skipping releases:**
+Use non-releasing commit types (`docs:`, `chore:`, `ci:`, `test:`, `style:`) or add `[skip release]` to commit message
 
-**Draft mode:** Set `"draft-pull-request": true` in config to create PRs as drafts (prevents accidental merges)
-
-**Labels:**
-- `autorelease: pending` - PR waiting to merge
-- `autorelease: triggered` - Release in progress
+**Key differences from Release Please:**
+- **No release PRs** - releases happen immediately on qualifying commits
+- **Per-commit releases** - each `feat:`/`fix:` triggers a release
+- **More automated** - less manual control, faster iteration
 
 ## Notes for AI Assistants
 
@@ -342,7 +336,7 @@ npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of in
 - **Cannot be bypassed** - invalid commits will be rejected
 - PR titles must also follow format
 - Format: lowercase type, colon + space, lowercase description
-- `feat:` → patch, `feat!:` → minor (pre-1.0), major requires manual edit of `.release-please-manifest.json`
+- `feat:`, `fix:`, `perf:`, `refactor:` → patch (pre-1.0), `feat!:` → minor, major requires manual package.json edit
 
 **Development:**
 - Learning/experimental project - suggest improvements freely
@@ -357,12 +351,14 @@ npm Trusted Publishers **requires npm >= 11.5.1**. This was the root cause of in
 - Follow Biome code style
 
 **Release workflow:**
-- Releases fully automated via Release Please
-- Merge to `main` with proper commit messages → Release PR created
-- Merge Release PR → auto-publish to npm/JSR
-- See `RELEASE_PLEASE_MAINTAINER_GUIDE.md` for details
+- Releases fully automated via semantic-release (per-commit)
+- Push to `master` with proper commit messages → immediate release (if commit type triggers release)
+- Types that trigger releases: `feat:`, `fix:`, `perf:`, `refactor:`, `feat!:`
+- Types that DON'T trigger releases: `docs:`, `chore:`, `ci:`, `test:`, `style:`
+- See `SEMANTIC_RELEASE_GUIDE.md` for details
 
-**Configuration changes:**
-- After changing `release-please-config.json`: Close PR, remove `autorelease: pending` label, push new commit
-- Enable `draft-pull-request: true` to prevent accidental merges
+**Configuration:**
+- Release rules defined in `.releaserc.json`
+- Version automatically determined from commits
+- To skip release: use non-releasing commit type or add `[skip release]` to message
 - Set up branch protection on `master` with required `Test & Build` check

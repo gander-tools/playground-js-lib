@@ -1,4 +1,4 @@
-name: Release Please
+name: Semantic Release
 
 on:
   push:
@@ -7,34 +7,18 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
   id-token: write
 
 jobs:
-  create-release:
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-      version: ${{ steps.release.outputs.version }}
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
-        with:
-          disable-sudo: true
-          egress-policy: audit
-
-      - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
-        id: release
-
-  # Ten job wykona się TYLKO po zmerge'owaniu Release PR
-  publish-npm:
-    needs: create-release
-    if: ${{ needs.create-release.outputs.release_created }}
+  release:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
+      issues: write
+      pull-requests: write
       id-token: write
 
     steps:
@@ -46,14 +30,14 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: "24"
-          # registry-url removed - not needed for Trusted Publishers with OIDC
-          # Removing this prevents actions/setup-node from adding deprecated
-          # 'always-auth=true' to .npmrc (causes warnings in npm 11+)
 
       - name: Install latest npm
         run: npm install -g npm@11.5.1
@@ -89,19 +73,16 @@ jobs:
             exit 1
           fi
 
-      - name: Publish to npm
-        run: npm publish --provenance --access public
+      - name: Install jq for jsr.json updates
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Log release info
-        run: |
-          echo "✅ Successfully published version ${{ needs.create-release.outputs.version }}"
-          echo "📦 Package: @gander-tools/playground@${{ needs.create-release.outputs.version }}"
-          echo "🏷️  Tag: ${{ needs.create-release.outputs.tag_name }}"
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
 
-  # Publikacja do JSR po pomyślnej publikacji do npm
   publish-jsr:
-    needs: [create-release, publish-npm]
-    if: ${{ needs.create-release.outputs.release_created }}
+    needs: release
     runs-on: ubuntu-latest
 
     permissions:
@@ -117,6 +98,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          ref: master
 
       - name: Setup Deno
         uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
@@ -128,8 +111,3 @@ jobs:
 
       - name: Publish to JSR
         run: deno publish
-
-      - name: Log JSR release info
-        run: |
-          echo "✅ Successfully published to JSR"
-          echo "📦 Version: ${{ needs.create-release.outputs.version }}"
