@@ -62,25 +62,16 @@ jobs:
                     disable-sudo: true
                     egress-policy: audit
 
-            -   name: Checkout code
-                uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-
-            -   name: Setup Node.js
-                uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+            -   name: Setup Node.js and install dependencies
+                uses: ./.github/actions/setup-node-and-install
                 with:
                     node-version: "24"
+                    skip-install-scripts: "true"
 
-            -   name: Install dependencies
-                run: npm install --ignore-scripts
-
-            -   name: Run type check
-                run: npm run typecheck
-
-            -   name: Run linter
-                run: npm run lint
-
-            -   name: Run unit tests
-                run: npm run test:run
-
-            -   name: Run build test
-                run: npm run test:run test/build.test.ts
+            -   name: Test and validate
+                uses: ./.github/actions/test-and-validate
+                with:
+                    run-typecheck: "true"
+                    run-lint: "true"
+                    run-unit-tests: "true"
+                    run-build-test: "true"
