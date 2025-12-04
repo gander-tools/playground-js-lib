@@ -1,0 +1,39 @@
+name: Setup Node.js and Install Dependencies
+description: Checkout code, setup Node.js, and install npm dependencies
+inputs:
+  node-version:
+    description: Node.js version to use
+    required: false
+    default: "24"
+  install-npm-version:
+    description: Install specific npm version globally (optional)
+    required: false
+    default: ""
+  skip-install-scripts:
+    description: Skip npm install scripts (--ignore-scripts flag)
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install latest npm
+      if: ${{ inputs.install-npm-version != '' }}
+      shell: bash
+      run: npm install -g npm@${{ inputs.install-npm-version }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if [ "${{ inputs.skip-install-scripts }}" = "true" ]; then
+          npm install --ignore-scripts
+        else
+          npm install
+        fi

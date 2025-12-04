@@ -1,0 +1,59 @@
+name: Test and Validate
+description: Run typecheck, linter, unit tests, and build tests
+inputs:
+  run-typecheck:
+    description: Run type checking
+    required: false
+    default: "true"
+  run-lint:
+    description: Run linter
+    required: false
+    default: "true"
+  run-unit-tests:
+    description: Run unit tests
+    required: false
+    default: "true"
+  run-build-test:
+    description: Run build test
+    required: false
+    default: "true"
+  run-build:
+    description: Run build (prepack)
+    required: false
+    default: "false"
+  run-publint:
+    description: Run publint validation
+    required: false
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: Run type check
+      if: ${{ inputs.run-typecheck == 'true' }}
+      shell: bash
+      run: npm run typecheck
+
+    - name: Run linter
+      if: ${{ inputs.run-lint == 'true' }}
+      shell: bash
+      run: npm run lint
+
+    - name: Run unit tests
+      if: ${{ inputs.run-unit-tests == 'true' }}
+      shell: bash
+      run: npm run test:run
+
+    - name: Run build test
+      if: ${{ inputs.run-build-test == 'true' }}
+      shell: bash
+      run: npm run test:run test/build.test.ts
+
+    - name: Build package
+      if: ${{ inputs.run-build == 'true' }}
+      shell: bash
+      run: npm run prepack
+
+    - name: Validate package
+      if: ${{ inputs.run-publint == 'true' }}
+      shell: bash
+      run: npm run publint
