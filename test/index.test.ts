@@ -1,6 +1,6 @@
 import { ref } from "@vue/reactivity";
 import { describe, expect, it } from "vitest";
-import { add, addRef } from "../src";
+import { add, addRef, subtract } from "../src";
 
 describe("add", () => {
     it("should be defined", () => {
@@ -177,5 +177,41 @@ describe("addRef", () => {
         a.value = Number.MAX_SAFE_INTEGER - 1;
         b.value = 1;
         expect(result.value).toBe(Number.MAX_SAFE_INTEGER);
+    });
+});
+
+describe("subtract", () => {
+    it("should be defined", () => {
+        expect(subtract).toBeDefined();
+        expect(typeof subtract).toBe("function");
+    });
+
+    it("should subtract two positive numbers correctly", () => {
+        expect(subtract(5, 3)).toBe(2);
+        expect(subtract(30, 10)).toBe(20);
+        expect(subtract(300, 100)).toBe(200);
+    });
+
+    it("should subtract negative numbers correctly", () => {
+        expect(subtract(-5, -3)).toBe(-2);
+        expect(subtract(-10, -20)).toBe(10);
+    });
+
+    it("should subtract positive and negative numbers correctly", () => {
+        expect(subtract(5, -3)).toBe(8);
+        expect(subtract(-5, 3)).toBe(-8);
+        expect(subtract(10, -10)).toBe(20);
+    });
+
+    it("should handle zero correctly", () => {
+        expect(subtract(0, 0)).toBe(0);
+        expect(subtract(5, 0)).toBe(5);
+        expect(subtract(0, 5)).toBe(-5);
+    });
+
+    it("should handle decimal numbers correctly", () => {
+        expect(subtract(4, 1.5)).toBe(2.5);
+        expect(subtract(0.3, 0.1)).toBeCloseTo(0.2);
+        expect(subtract(16, 5.25)).toBe(10.75);
     });
 });

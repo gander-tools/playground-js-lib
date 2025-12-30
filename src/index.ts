@@ -8,6 +8,13 @@ export function add(a: number, b: number): number {
 }
 
 /**
+ * This function subtracts the second number from the first number.
+ */
+export function subtract(a: number, b: number): number {
+    return a - b;
+}
+
+/**
  * This function adds the two passed references with numbers together.
  * The return type is also new reference with number
  *
