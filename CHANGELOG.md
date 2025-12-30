@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.11](https://github.com/gander-tools/playground-js-lib/compare/v0.10.10...v0.10.11) (2025-12-30)
+
+
+### Features
+
+* add subtract function ([34feb53](https://github.com/gander-tools/playground-js-lib/commit/34feb53449d7d836e78a13e4325f979ffff40f68))
+* add subtract function ([#162](https://github.com/gander-tools/playground-js-lib/issues/162)) ([1a4ad6c](https://github.com/gander-tools/playground-js-lib/commit/1a4ad6cfe6bb0207c6f99ebf5cb727cf14c6d1ff))
+
 ## [0.10.10](https://github.com/gander-tools/playground-js-lib/compare/v0.10.9...v0.10.10) (2025-11-28)
 
 
