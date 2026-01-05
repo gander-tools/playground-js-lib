@@ -56,10 +56,10 @@ config:
 
 # Release and versioning
 release:
-    title: "^chore\\(master\\): release"
+    title: "^chore\\(release\\):"
     files:
-        - ".release-please-manifest.json"
-        - "release-please-config.json"
+        - ".releaserc.json"
+        - "CHANGELOG.md"
 
 # Bug fixes
 bug:

@@ -1,15 +1,15 @@
-# Fixing Release Please Merge Commit Parsing Issues
+# GitHub Merge Commit Configuration for Automated Releases
 
 ## Problem
 
-Release Please fails to parse GitHub's default merge commit messages, causing errors like:
+semantic-release (and Release Please before it) cannot parse GitHub's default merge commit messages, causing potential release issues.
 
+GitHub's default merge commit format:
 ```
-❯ commit could not be parsed: ced54cdea299e8cac898dc1bf26ecb0ab2841fee Merge pull request #102 from...
-❯ error message: Error: unexpected token ' ' at 1:6, valid tokens [(, !, :]
+Merge pull request #102 from gander-tools/branch-name
 ```
 
-While Release Please continues working (by parsing commits within PRs), these errors are noisy and indicate a configuration issue.
+This doesn't follow Conventional Commits format required by semantic-release.
 
 ## Root Cause
 
@@ -56,7 +56,7 @@ After configuration:
 1. Create a test PR with a Conventional Commits title (e.g., `feat: test feature`)
 2. Merge it
 3. Check the merge commit message follows the PR title
-4. Verify Release Please parses it without errors
+4. Verify semantic-release processes it correctly
 
 ## Alternative Solutions
 
@@ -68,9 +68,9 @@ After configuration:
 4. ❌ **Allow rebase merging** (optional)
 
 **Benefits:**
-- No merge commits → no parsing errors
-- Cleaner git history
-- PR title becomes the commit message (already validated by semantic-pr.yml)
+- No merge commits → cleaner git history
+- PR title becomes the commit message (already validated by validate-pr-title.yml)
+- semantic-release triggers immediately on the squashed commit
 
 **Drawbacks:**
 - Loses individual commit history in PRs
@@ -94,34 +94,31 @@ After configuration:
 
 ## Verification
 
-After applying the fix, Release Please should:
-1. ✅ Parse merge commits without errors
-2. ✅ Generate release PRs based on commit types
-3. ✅ Include proper entries in CHANGELOG.md
+After applying the fix, semantic-release should:
+1. ✅ Parse all commits correctly
+2. ✅ Determine version bumps accurately
+3. ✅ Publish releases for qualifying commits
+4. ✅ Update CHANGELOG.md properly
 
-Check Release Please logs in GitHub Actions:
-```
-✔ Collecting release commit SHAs
-✔ Building candidate release pull request for path: .
-✔ Created/updated release PR
-```
+Check semantic-release logs in GitHub Actions for successful execution.
 
 ## Current Project Status
 
 **Configured Validations:**
-- ✅ `.github/workflows/semantic-pr.yml` - Validates PR titles follow Conventional Commits
-- ✅ `.github/workflows/commitlint.yml` - Validates individual commits in PRs
+- ✅ `.github/workflows/validate-pr-title.yml` - Validates PR titles follow Conventional Commits
+- ✅ `.github/workflows/validate-commits.yml` - Validates individual commits in PRs
 - ✅ `lefthook.yml` + `commitlint.config.js` - Local commit message validation
+- ✅ `semantic-release` - Automated per-commit releases
 
-**Missing:**
-- ❌ GitHub merge commit message format not configured
-- ❌ This causes parsing errors in Release Please logs
+**Recommended Setup:**
+- ✅ Use "Squash and merge" strategy (eliminates merge commits)
+- OR configure merge commit message format to use PR title (if using merge commits)
 
 **Recommended Action:**
-Apply **Step 2** above to configure merge commit message format to use PR title.
+Apply **Option 1** (Squash Merging) from the alternatives above for best results with semantic-release.
 
 ## References
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
-- [Release Please Documentation](https://github.com/googleapis/release-please)
+- [semantic-release Documentation](https://semantic-release.gitbook.io/)
 - [GitHub Merge Methods](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges)
