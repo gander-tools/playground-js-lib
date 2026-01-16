@@ -61,7 +61,7 @@
         "@vitest/ui": "4.0.14",
         "@vue/reactivity": "3.5.25",
         "git-cliff": "2.10.1",
-        "lefthook": "2.0.4",
+        "lefthook": "2.0.15",
         "markdownlint-cli2": "^0.19.1",
         "pkgroll": "2.21.3",
         "publint": "0.3.15",
