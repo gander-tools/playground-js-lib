@@ -30,7 +30,7 @@ jobs:
                 uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
             -   name: Generate SBOM
-                uses: anchore/sbom-action@fbfd9c6c189226748411491745178e0c2017392d # v0
+                uses: anchore/sbom-action@deef08a0db64bfad603422135db61477b16cef56 # v0
                 with:
                     format: 'spdx-json'
                     output-file: 'sbom.spdx.json'
