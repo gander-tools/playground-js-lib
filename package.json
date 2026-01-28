@@ -62,7 +62,7 @@
         "@vue/reactivity": "3.5.27",
         "git-cliff": "2.10.1",
         "lefthook": "2.0.16",
-        "markdownlint-cli2": "^0.19.1",
+        "markdownlint-cli2": "^0.20.0",
         "pkgroll": "2.21.5",
         "publint": "0.3.17",
         "release-it": "19.0.6",
