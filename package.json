@@ -64,7 +64,7 @@
         "lefthook": "2.0.15",
         "markdownlint-cli2": "^0.19.1",
         "pkgroll": "2.21.5",
-        "publint": "0.3.15",
+        "publint": "0.3.17",
         "release-it": "19.0.6",
         "typescript": "5.9.3",
         "vitest": "4.0.18"
