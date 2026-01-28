@@ -59,7 +59,7 @@
         "@types/node": "24.10.1",
         "@vitest/coverage-v8": "4.0.18",
         "@vitest/ui": "4.0.18",
-        "@vue/reactivity": "3.5.25",
+        "@vue/reactivity": "3.5.27",
         "git-cliff": "2.10.1",
         "lefthook": "2.0.15",
         "markdownlint-cli2": "^0.19.1",
