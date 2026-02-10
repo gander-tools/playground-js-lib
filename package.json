@@ -56,7 +56,7 @@
         "@commitlint/cli": "^20.1.0",
         "@commitlint/config-conventional": "^20.0.0",
         "@release-it/bumper": "7.0.5",
-        "@types/node": "24.10.9",
+        "@types/node": "25.2.2",
         "@vitest/coverage-v8": "4.0.18",
         "@vitest/ui": "4.0.18",
         "@vue/reactivity": "3.5.27",
