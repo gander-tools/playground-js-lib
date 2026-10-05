@@ -53,7 +53,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "2.5.14",
-        "@commitlint/cli": "^20.5.3",
+        "@commitlint/cli": "^21.2.3",
         "@commitlint/config-conventional": "^20.5.3",
         "@release-it/bumper": "7.0.6",
         "@types/node": "26.6.3",
