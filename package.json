@@ -52,7 +52,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.14",
+        "@biomejs/biome": "2.5.15",
         "@commitlint/cli": "^21.2.3",
         "@commitlint/config-conventional": "^21.0.0",
         "@release-it/bumper": "8.0.1",
