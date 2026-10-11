@@ -1,6 +1,7 @@
 name: Test & Build
 
 on:
+    workflow_dispatch:
     pull_request:
         branches:
             - master
@@ -15,6 +16,7 @@ jobs:
     # Detect which files changed
     changes:
         name: Detect Changes
+        if: github.event_name != 'workflow_dispatch'
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -51,10 +53,11 @@ jobs:
         needs: changes
         # Run if source, tests, or config changed
         if: |
-            needs.changes.outputs.src == 'true' ||
+            !cancelled() && (needs.changes.outputs.src == 'true' ||
             needs.changes.outputs.tests == 'true' ||
             needs.changes.outputs.config == 'true' ||
-            github.event_name == 'push'
+            github.event_name == 'push' ||
+            github.event_name == 'workflow_dispatch')
         steps:
             -   name: Harden Runner
                 uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
