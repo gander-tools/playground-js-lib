@@ -1,4 +1,8 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["github>gander-settings/renovate:defaults"]
+    "extends": [
+        "github>gander-settings/renovate:defaults",
+        "github>gander-settings/renovate:pin(node,24)",
+        "github>gander-settings/renovate:before(typescript,8)"
+    ]
 }
