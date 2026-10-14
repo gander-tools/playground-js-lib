@@ -11,7 +11,7 @@ permissions:
 jobs:
     auto-approve:
         name: Auto approve PRs
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         # Only auto-approve PRs from dependabot or with auto-approve label
         if: |
             github.actor == 'dependabot[bot]' ||

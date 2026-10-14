@@ -14,7 +14,7 @@ jobs:
   format-files:
     # Only run on Release Please PRs
     if: ${{ startsWith(github.head_ref, 'release-please--') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout PR branch
