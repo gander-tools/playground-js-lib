@@ -1,57 +1,57 @@
 name: Format Release PR Files
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-    branches:
-      - master
+    pull_request:
+        types: [opened, synchronize]
+        branches:
+            - master
 
 permissions:
-  contents: write
-  pull-requests: read
+    contents: write
+    pull-requests: read
 
 jobs:
-  format-files:
-    # Only run on Release Please PRs
-    if: ${{ startsWith(github.head_ref, 'release-please--') }}
-    runs-on: ubuntu-26.04
+    format-files:
+        # Only run on Release Please PRs
+        if: ${{ startsWith(github.head_ref, 'release-please--') }}
+        runs-on: ubuntu-26.04
 
-    steps:
-      - name: Checkout PR branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Checkout PR branch
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  ref: ${{ github.head_ref }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "24"
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: "24"
 
-      - name: Install dependencies
-        run: npm install --ignore-scripts
+            - name: Install dependencies
+              run: npm install --ignore-scripts
 
-      - name: Run check:fix to format files
-        run: npm run check:fix
+            - name: Run check:fix to format files
+              run: npm run check:fix
 
-      - name: Check for changes
-        id: git-check
-        run: |
-          git diff --exit-code || echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            - name: Check for changes
+              id: git-check
+              run: |
+                  git diff --exit-code || echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
-      - name: Commit and push formatted files
-        if: steps.git-check.outputs.has_changes == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: format release files with biome"
-          git push
+            - name: Commit and push formatted files
+              if: steps.git-check.outputs.has_changes == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add .
+                  git commit -m "chore: format release files with biome"
+                  git push
 
-      - name: Log completion
-        if: steps.git-check.outputs.has_changes == 'true'
-        run: echo "✅ Release PR files have been formatted"
+            - name: Log completion
+              if: steps.git-check.outputs.has_changes == 'true'
+              run: echo "✅ Release PR files have been formatted"
 
-      - name: Log no changes
-        if: steps.git-check.outputs.has_changes != 'true'
-        run: echo "✅ No formatting changes needed"
+            - name: Log no changes
+              if: steps.git-check.outputs.has_changes != 'true'
+              run: echo "✅ No formatting changes needed"

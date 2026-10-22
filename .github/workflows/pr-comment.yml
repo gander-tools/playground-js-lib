@@ -13,41 +13,41 @@ jobs:
         name: Add PR comment
         runs-on: ubuntu-26.04
         steps:
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-                with:
-                    node-version: "24"
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: "24"
 
-            -   name: Install dependencies
-                run: npm install --ignore-scripts
+            - name: Install dependencies
+              run: npm install --ignore-scripts
 
-            -   name: Run tests with coverage
-                run: npm run test:coverage
-                continue-on-error: true
+            - name: Run tests with coverage
+              run: npm run test:coverage
+              continue-on-error: true
 
-            -   name: Generate coverage report
-                id: coverage
-                run: |
-                    # Extract coverage summary from vitest output
-                    COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null || echo '{"total":{"lines":{"pct":0},"statements":{"pct":0},"functions":{"pct":0},"branches":{"pct":0}}}')
-                    echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
+            - name: Generate coverage report
+              id: coverage
+              run: |
+                  # Extract coverage summary from vitest output
+                  COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null || echo '{"total":{"lines":{"pct":0},"statements":{"pct":0},"functions":{"pct":0},"branches":{"pct":0}}}')
+                  echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
 
-            -   name: Comment PR with coverage
-                uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
-                with:
-                    issue-number: ${{ github.event.pull_request.number }}
-                    body: |
-                        ## 📊 Test Coverage Report
+            - name: Comment PR with coverage
+              uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+              with:
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      ## 📊 Test Coverage Report
 
-                        **PR:** #${{ github.event.pull_request.number }}
-                        **Commit:** ${{ github.event.pull_request.head.sha }}
+                      **PR:** #${{ github.event.pull_request.number }}
+                      **Commit:** ${{ github.event.pull_request.head.sha }}
 
-                        ### Coverage Summary
-                        Coverage data will be displayed here after test execution.
+                      ### Coverage Summary
+                      Coverage data will be displayed here after test execution.
 
-                        ---
-                        *This comment is automatically updated by the PR Comment workflow.*
-                    edit-mode: replace
+                      ---
+                      *This comment is automatically updated by the PR Comment workflow.*
+                  edit-mode: replace

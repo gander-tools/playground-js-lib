@@ -16,29 +16,29 @@ jobs:
         runs-on: ubuntu-26.04
 
         steps:
-            -   name: Harden Runner
-                uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
-                with:
-                    disable-sudo: true
-                    egress-policy: audit
+            - name: Harden Runner
+              uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+              with:
+                  disable-sudo: true
+                  egress-policy: audit
 
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-                with:
-                    node-version: "24"
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: "24"
 
-            -   name: Install dependencies
-                run: npm install --ignore-scripts
+            - name: Install dependencies
+              run: npm install --ignore-scripts
 
-            -   name: Run tests with coverage
-                run: npm run test:coverage
+            - name: Run tests with coverage
+              run: npm run test:coverage
 
-            -   name: Upload coverage to Codecov
-                uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-                with:
-                    files: ./coverage/coverage-final.json
-                    fail_ci_if_error: false
-                    verbose: true
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+              with:
+                  files: ./coverage/coverage-final.json
+                  fail_ci_if_error: false
+                  verbose: true

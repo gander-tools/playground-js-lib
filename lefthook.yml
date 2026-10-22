@@ -1,11 +1,11 @@
 #   Refer for explanation to following link:
 #   https://lefthook.dev/configuration/
 #
- pre-commit:
-   jobs:
-     - run: npm run check
+pre-commit:
+    jobs:
+        - run: npm run check
 
- commit-msg:
-   commands:
-     commitlint:
-       run: npx commitlint --edit {1}
+commit-msg:
+    commands:
+        commitlint:
+            run: npx commitlint --edit {1}

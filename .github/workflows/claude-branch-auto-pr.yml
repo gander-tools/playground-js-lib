@@ -3,7 +3,7 @@ name: Claude Branch Auto PR
 on:
     push:
         branches:
-            - 'claude/**'
+            - "claude/**"
 
 permissions:
     contents: read
@@ -13,125 +13,125 @@ jobs:
     create-claude-pr:
         runs-on: ubuntu-26.04
         steps:
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-                with:
-                    fetch-depth: 0
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  fetch-depth: 0
 
-            -   name: Ensure base branch exists
-                run: |
-                    # Fetch master branch explicitly to ensure it exists
-                    git fetch origin master:refs/remotes/origin/master || {
-                        echo "::error::Failed to fetch origin/master. The base branch may not exist."
-                        exit 1
-                    }
+            - name: Ensure base branch exists
+              run: |
+                  # Fetch master branch explicitly to ensure it exists
+                  git fetch origin master:refs/remotes/origin/master || {
+                      echo "::error::Failed to fetch origin/master. The base branch may not exist."
+                      exit 1
+                  }
 
-                    # Verify we can access it
-                    if ! git rev-parse origin/master >/dev/null 2>&1; then
-                        echo "::error::origin/master does not exist after fetch"
-                        exit 1
-                    fi
+                  # Verify we can access it
+                  if ! git rev-parse origin/master >/dev/null 2>&1; then
+                      echo "::error::origin/master does not exist after fetch"
+                      exit 1
+                  fi
 
-                    echo "::notice::Successfully verified origin/master exists"
+                  echo "::notice::Successfully verified origin/master exists"
 
-            -   name: Check if PR already exists
-                id: check-pr
-                env:
-                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                run: |
-                    BRANCH_NAME="${{ github.ref_name }}"
-                    echo "Checking for existing PR from branch: $BRANCH_NAME"
+            - name: Check if PR already exists
+              id: check-pr
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  BRANCH_NAME="${{ github.ref_name }}"
+                  echo "Checking for existing PR from branch: $BRANCH_NAME"
 
-                    # Check if PR exists for this branch
-                    PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --json number --jq 'length')
+                  # Check if PR exists for this branch
+                  PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --json number --jq 'length')
 
-                    echo "pr_exists=$PR_EXISTS" >> "$GITHUB_OUTPUT"
+                  echo "pr_exists=$PR_EXISTS" >> "$GITHUB_OUTPUT"
 
-                    if [ "$PR_EXISTS" -gt 0 ]; then
-                      PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number --jq '.[0].number')
-                      echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
-                      echo "::notice::PR already exists: #$PR_NUMBER"
-                    fi
+                  if [ "$PR_EXISTS" -gt 0 ]; then
+                    PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number --jq '.[0].number')
+                    echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+                    echo "::notice::PR already exists: #$PR_NUMBER"
+                  fi
 
-            -   name: Extract PR title from first commit
-                id: extract-info
-                run: |
-                    # Verify there are commits to process
-                    COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
+            - name: Extract PR title from first commit
+              id: extract-info
+              run: |
+                  # Verify there are commits to process
+                  COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
 
-                    if [ "$COMMIT_COUNT" -eq 0 ]; then
-                        echo "::error::No commits found between origin/master and HEAD"
-                        echo "::error::This branch may not have diverged from master yet"
-                        exit 1
-                    fi
+                  if [ "$COMMIT_COUNT" -eq 0 ]; then
+                      echo "::error::No commits found between origin/master and HEAD"
+                      echo "::error::This branch may not have diverged from master yet"
+                      exit 1
+                  fi
 
-                    echo "::notice::Found $COMMIT_COUNT commit(s) on this branch"
+                  echo "::notice::Found $COMMIT_COUNT commit(s) on this branch"
 
-                    # Get title from first commit on branch
-                    PR_TITLE=$(git log origin/master..HEAD --pretty=format:"%s" --reverse | head -1)
+                  # Get title from first commit on branch
+                  PR_TITLE=$(git log origin/master..HEAD --pretty=format:"%s" --reverse | head -1)
 
-                    # Validate PR title is not empty
-                    if [ -z "$PR_TITLE" ]; then
-                        echo "::error::Could not extract PR title from commits"
-                        exit 1
-                    fi
+                  # Validate PR title is not empty
+                  if [ -z "$PR_TITLE" ]; then
+                      echo "::error::Could not extract PR title from commits"
+                      exit 1
+                  fi
 
-                    echo "pr_title=$PR_TITLE" >> "$GITHUB_OUTPUT"
-                    echo "::notice::PR title will be: $PR_TITLE"
+                  echo "pr_title=$PR_TITLE" >> "$GITHUB_OUTPUT"
+                  echo "::notice::PR title will be: $PR_TITLE"
 
-            -   name: Create Pull Request
-                if: steps.check-pr.outputs.pr_exists == '0'
-                env:
-                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                run: |
-                    BRANCH_NAME="${{ github.ref_name }}"
-                    PR_TITLE="${{ steps.extract-info.outputs.pr_title }}"
+            - name: Create Pull Request
+              if: steps.check-pr.outputs.pr_exists == '0'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  BRANCH_NAME="${{ github.ref_name }}"
+                  PR_TITLE="${{ steps.extract-info.outputs.pr_title }}"
 
-                    # Validate PR title exists
-                    if [ -z "$PR_TITLE" ]; then
-                        echo "::error::PR title is empty, cannot create PR"
-                        exit 1
-                    fi
+                  # Validate PR title exists
+                  if [ -z "$PR_TITLE" ]; then
+                      echo "::error::PR title is empty, cannot create PR"
+                      exit 1
+                  fi
 
-                    # Get commit messages for PR body
-                    COMMITS=$(git log origin/master..HEAD --pretty=format:"- %s (%h)" | head -10)
+                  # Get commit messages for PR body
+                  COMMITS=$(git log origin/master..HEAD --pretty=format:"- %s (%h)" | head -10)
 
-                    # Validate we have commits
-                    if [ -z "$COMMITS" ]; then
-                        echo "::error::No commits found for PR body"
-                        exit 1
-                    fi
+                  # Validate we have commits
+                  if [ -z "$COMMITS" ]; then
+                      echo "::error::No commits found for PR body"
+                      exit 1
+                  fi
 
-                    # Create PR body
-                    PR_BODY=$(cat << EOF
-                    ### Recent Commits:
-                    $COMMITS
+                  # Create PR body
+                  PR_BODY=$(cat << EOF
+                  ### Recent Commits:
+                  $COMMITS
 
-                    ---
+                  ---
 
-                    This code was generated with the assistance of Claude AI.
-                    EOF
-                    )
+                  This code was generated with the assistance of Claude AI.
+                  EOF
+                  )
 
-                    echo "::notice::Creating PR with title: $PR_TITLE"
+                  echo "::notice::Creating PR with title: $PR_TITLE"
 
-                    # Create the PR
-                    gh pr create \
-                      --title "$PR_TITLE" \
-                      --body "$PR_BODY" \
-                      --base master \
-                      --head "$BRANCH_NAME" \
-                      --label "ai-generated" \
-                      --label "claude-code"
+                  # Create the PR
+                  gh pr create \
+                    --title "$PR_TITLE" \
+                    --body "$PR_BODY" \
+                    --base master \
+                    --head "$BRANCH_NAME" \
+                    --label "ai-generated" \
+                    --label "claude-code"
 
-            -   name: PR Summary
-                if: always()
-                run: |
-                    BRANCH_NAME="${{ github.ref_name }}"
-                    PR_EXISTS="${{ steps.check-pr.outputs.pr_exists }}"
+            - name: PR Summary
+              if: always()
+              run: |
+                  BRANCH_NAME="${{ github.ref_name }}"
+                  PR_EXISTS="${{ steps.check-pr.outputs.pr_exists }}"
 
-                    if [ "${PR_EXISTS:-0}" -gt 0 ]; then
-                      echo "::notice::PR #${{ steps.check-pr.outputs.pr_number }} already exists for branch $BRANCH_NAME"
-                    else
-                      echo "::notice::New PR created for branch $BRANCH_NAME"
-                    fi
+                  if [ "${PR_EXISTS:-0}" -gt 0 ]; then
+                    echo "::notice::PR #${{ steps.check-pr.outputs.pr_number }} already exists for branch $BRANCH_NAME"
+                  else
+                    echo "::notice::New PR created for branch $BRANCH_NAME"
+                  fi

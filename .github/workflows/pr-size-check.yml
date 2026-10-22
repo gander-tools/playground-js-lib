@@ -13,84 +13,84 @@ jobs:
         name: Check PR size
         runs-on: ubuntu-26.04
         steps:
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-                with:
-                    fetch-depth: 0
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  fetch-depth: 0
 
-            -   name: Get PR stats
-                id: stats
-                run: |
-                    # Get the base and head commits
-                    BASE_SHA=${{ github.event.pull_request.base.sha }}
-                    HEAD_SHA=${{ github.event.pull_request.head.sha }}
+            - name: Get PR stats
+              id: stats
+              run: |
+                  # Get the base and head commits
+                  BASE_SHA=${{ github.event.pull_request.base.sha }}
+                  HEAD_SHA=${{ github.event.pull_request.head.sha }}
 
-                    # Get file changes
-                    FILES_CHANGED=$(git diff --name-only "$BASE_SHA".."$HEAD_SHA" | wc -l)
-                    ADDITIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$1} END {print sum}')
-                    DELETIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$2} END {print sum}')
+                  # Get file changes
+                  FILES_CHANGED=$(git diff --name-only "$BASE_SHA".."$HEAD_SHA" | wc -l)
+                  ADDITIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$1} END {print sum}')
+                  DELETIONS=$(git diff --numstat "$BASE_SHA".."$HEAD_SHA" | awk '{sum+=$2} END {print sum}')
 
-                    {
-                        echo "files_changed=$FILES_CHANGED"
-                        echo "additions=$ADDITIONS"
-                        echo "deletions=$DELETIONS"
-                    } >> "$GITHUB_OUTPUT"
+                  {
+                      echo "files_changed=$FILES_CHANGED"
+                      echo "additions=$ADDITIONS"
+                      echo "deletions=$DELETIONS"
+                  } >> "$GITHUB_OUTPUT"
 
-            -   name: Determine PR size
-                id: size
-                run: |
-                    ADDITIONS="${{ steps.stats.outputs.additions }}"
-                    DELETIONS="${{ steps.stats.outputs.deletions }}"
-                    TOTAL=$((${ADDITIONS:-0} + ${DELETIONS:-0}))
+            - name: Determine PR size
+              id: size
+              run: |
+                  ADDITIONS="${{ steps.stats.outputs.additions }}"
+                  DELETIONS="${{ steps.stats.outputs.deletions }}"
+                  TOTAL=$((${ADDITIONS:-0} + ${DELETIONS:-0}))
 
-                    if [ "$TOTAL" -lt 100 ]; then
-                        {
-                            echo "size=🟢 XS"
-                            echo "color=success"
-                        } >> "$GITHUB_OUTPUT"
-                    elif [ "$TOTAL" -lt 300 ]; then
-                        {
-                            echo "size=🟢 Small"
-                            echo "color=success"
-                        } >> "$GITHUB_OUTPUT"
-                    elif [ "$TOTAL" -lt 500 ]; then
-                        {
-                            echo "size=🟡 Medium"
-                            echo "color=warning"
-                        } >> "$GITHUB_OUTPUT"
-                    elif [ "$TOTAL" -lt 1000 ]; then
-                        {
-                            echo "size=🟠 Large"
-                            echo "color=warning"
-                        } >> "$GITHUB_OUTPUT"
-                    else
-                        {
-                            echo "size=🔴 XL"
-                            echo "color=important"
-                        } >> "$GITHUB_OUTPUT"
-                    fi
+                  if [ "$TOTAL" -lt 100 ]; then
+                      {
+                          echo "size=🟢 XS"
+                          echo "color=success"
+                      } >> "$GITHUB_OUTPUT"
+                  elif [ "$TOTAL" -lt 300 ]; then
+                      {
+                          echo "size=🟢 Small"
+                          echo "color=success"
+                      } >> "$GITHUB_OUTPUT"
+                  elif [ "$TOTAL" -lt 500 ]; then
+                      {
+                          echo "size=🟡 Medium"
+                          echo "color=warning"
+                      } >> "$GITHUB_OUTPUT"
+                  elif [ "$TOTAL" -lt 1000 ]; then
+                      {
+                          echo "size=🟠 Large"
+                          echo "color=warning"
+                      } >> "$GITHUB_OUTPUT"
+                  else
+                      {
+                          echo "size=🔴 XL"
+                          echo "color=important"
+                      } >> "$GITHUB_OUTPUT"
+                  fi
 
-            -   name: Add sticky comment
-                uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
-                with:
-                    header: pr-size-check
-                    message: |
-                        ## 📏 PR Size: ${{ steps.size.outputs.size }}
+            - name: Add sticky comment
+              uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+              with:
+                  header: pr-size-check
+                  message: |
+                      ## 📏 PR Size: ${{ steps.size.outputs.size }}
 
-                        **Changes:**
-                        - 📁 Files changed: ${{ steps.stats.outputs.files_changed }}
-                        - ➕ Additions: ${{ steps.stats.outputs.additions }}
-                        - ➖ Deletions: ${{ steps.stats.outputs.deletions }}
+                      **Changes:**
+                      - 📁 Files changed: ${{ steps.stats.outputs.files_changed }}
+                      - ➕ Additions: ${{ steps.stats.outputs.additions }}
+                      - ➖ Deletions: ${{ steps.stats.outputs.deletions }}
 
-                        <details>
-                        <summary>💡 Tips for managing PR size</summary>
+                      <details>
+                      <summary>💡 Tips for managing PR size</summary>
 
-                        - **XS/Small**: Easy to review ✅
-                        - **Medium**: Consider breaking down if possible
-                        - **Large/XL**: Please split into smaller PRs for easier review
+                      - **XS/Small**: Easy to review ✅
+                      - **Medium**: Consider breaking down if possible
+                      - **Large/XL**: Please split into smaller PRs for easier review
 
-                        Smaller PRs are easier to review, test, and merge!
-                        </details>
+                      Smaller PRs are easier to review, test, and merge!
+                      </details>
 
-                        ---
-                        *This comment updates automatically when the PR changes.*
+                      ---
+                      *This comment updates automatically when the PR changes.*

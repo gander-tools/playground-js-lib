@@ -27,25 +27,25 @@ jobs:
             config: ${{ steps.filter.outputs.config }}
             workflows: ${{ steps.filter.outputs.workflows }}
         steps:
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            -   name: Check for file changes
-                uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-                id: filter
-                with:
-                    filters: |
-                        src:
-                          - 'src/**'
-                          - 'package.json'
-                        tests:
-                          - 'test/**'
-                        config:
-                          - 'tsconfig.json'
-                          - 'biome.json'
-                          - 'commitlint.config.js'
-                        workflows:
-                          - '.github/workflows/**'
+            - name: Check for file changes
+              uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+              id: filter
+              with:
+                  filters: |
+                      src:
+                        - 'src/**'
+                        - 'package.json'
+                      tests:
+                        - 'test/**'
+                      config:
+                        - 'tsconfig.json'
+                        - 'biome.json'
+                        - 'commitlint.config.js'
+                      workflows:
+                        - '.github/workflows/**'
 
     test-and-build:
         name: Test & Build
@@ -59,31 +59,31 @@ jobs:
             github.event_name == 'push' ||
             github.event_name == 'workflow_dispatch')
         steps:
-            -   name: Harden Runner
-                uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
-                with:
-                    disable-sudo: true
-                    egress-policy: audit
+            - name: Harden Runner
+              uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+              with:
+                  disable-sudo: true
+                  egress-policy: audit
 
-            -   name: Checkout code
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-                with:
-                    node-version: "24"
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: "24"
 
-            -   name: Install dependencies
-                run: npm install --ignore-scripts
+            - name: Install dependencies
+              run: npm install --ignore-scripts
 
-            -   name: Run type check
-                run: npm run typecheck
+            - name: Run type check
+              run: npm run typecheck
 
-            -   name: Run linter
-                run: npm run lint
+            - name: Run linter
+              run: npm run lint
 
-            -   name: Run unit tests
-                run: npm run test:run
+            - name: Run unit tests
+              run: npm run test:run
 
-            -   name: Run build test
-                run: npm run test:run test/build.test.ts
+            - name: Run build test
+              run: npm run test:run test/build.test.ts
