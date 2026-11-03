@@ -65,7 +65,7 @@
         "markdownlint-cli2": "^0.24.0",
         "pkgroll": "2.29.0",
         "publint": "0.3.25",
-        "release-it": "21.1.1",
+        "release-it": "21.1.2",
         "typescript": "7.0.2",
         "vitest": "5.0.5"
     },
