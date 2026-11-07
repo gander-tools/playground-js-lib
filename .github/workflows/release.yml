@@ -31,8 +31,8 @@ jobs:
         with:
           node-version: "26"
 
-      - name: Install npm >= 11.5.1 (Trusted Publishers)
-        run: npm install -g npm@11.5.1
+      - name: Install npm with `stage` support
+        run: npm install -g npm@11.20.0
 
       - run: npm install --ignore-scripts
 
@@ -48,8 +48,8 @@ jobs:
       - name: Build
         run: npm run prepack
 
-      - name: Publish to npm
-        run: npm publish --provenance --access public
+      - name: Stage npm publish (approve afterwards with `npm stage approve`)
+        run: npm stage publish --provenance --access public
 
       - name: Publish to JSR
         run: npx jsr@0.14.3 publish
