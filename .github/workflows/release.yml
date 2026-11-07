@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump handled by release-it
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+permissions:
+  contents: write # release-it: commit, tag, push, GitHub Release
+  id-token: write # npm Trusted Publishers + JSR OIDC
+
+jobs:
+  release:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Install npm >= 11.5.1 (Trusted Publishers)
+        run: npm install -g npm@11.5.1
+
+      - run: npm install --ignore-scripts
+
+      - name: Bump, changelog, commit, tag, push, GitHub Release
+        env:
+          BUMP: ${{ inputs.bump }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          npx release-it --ci "$BUMP"
+
+      - name: Build
+        run: npm run prepack
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+      - name: Publish to JSR
+        run: npx jsr@0.14.3 publish

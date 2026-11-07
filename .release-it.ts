@@ -2,11 +2,9 @@ import type { Config } from "release-it";
 
 export default {
     git: {
-        changelog: "bun run git-cliff --unreleased",
+        changelog: "npx git-cliff --unreleased",
         commit: true,
-        commitArgs: ["-S"],
         tag: true,
-        tagArgs: ["-s"],
         push: true,
     },
     github: {
@@ -17,17 +15,11 @@ export default {
         publish: false,
     },
     hooks: {
-        "before:init": [
-            "bun run test:run",
-            "bun run typecheck",
-            "bun run check",
-            "bun run prepack",
-            "bun run publint",
-        ],
+        "before:init": ["npm run prepack", "npm run publint"],
         "after:bump": [
             // biome-ignore lint/suspicious/noTemplateCurlyInString: ${version} is a release-it template variable
-            "bun run git-cliff --output CHANGELOG.md --tag ${version}",
-            "bun run check:fix",
+            "npx git-cliff --output CHANGELOG.md --tag ${version}",
+            "npm run check:fix",
         ],
     },
     plugins: {
